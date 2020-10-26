@@ -1,0 +1,55 @@
+@charset "UTF-8";
+
+header {
+	min-width: 500px;
+    height: 300px;
+    overflow: hidden;
+}
+
+#loginDiv {
+	width: 330px;
+	height: 230px;
+	margin: 0 auto;
+	border: 1px solid;
+	line-height: 30px;
+	text-align: center;
+	font-size: 30px;
+}
+
+#loginDiv input {
+	height: 30px;
+}
+
+#loginDiv input, label {
+	display: block;
+	margin-left: 20px;
+	float: left;
+}
+
+#loginDiv input[type=submit], [type=button] {
+	width: 120px;
+}
+
+#loginInfoDiv {
+	width: 330px;
+    height: 298.1px;
+    margin: 0 auto;
+    border: 1px solid;
+    line-height: 30px;
+    text-align: center;
+    font-size: 30px;
+}
+
+#loginInfoDiv input {
+	height: 30px;
+}
+
+#loginInfoDiv input, label {
+	display: block;
+	margin-left: 20px;
+	float: left;
+}
+
+#loginInfoDiv input[type=submit], [type=reset] {
+	width: 120px;
+}
