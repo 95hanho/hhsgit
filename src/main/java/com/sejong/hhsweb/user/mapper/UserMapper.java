@@ -1,4 +1,4 @@
-package com.sejong.hhsweb.User.mapper;
+package com.sejong.hhsweb.user.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 

@@ -1,5 +1,8 @@
 package com.sejong.hhsweb.model;
 
+import org.apache.ibatis.type.Alias;
+
+@Alias("User")
 public class User {
 	
 	private String userId;

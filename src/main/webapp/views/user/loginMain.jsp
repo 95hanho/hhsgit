@@ -9,6 +9,10 @@
 	<link rel="stylesheet" href="user/css/loginMain.css">
 </head>
 <body>
+<c:if test="${ !empty requestScope.message }">
+	<h2 style="text-align: center;">${ message }</h2>
+</c:if>
+<c:if test="${ empty loginUser }">
 	<header>
 		<div id="loginDiv">
 			<h3>로그인</h3>
@@ -17,12 +21,15 @@
 				<div><label>비번 : </label><input name="userPwd" type="password"></div><br>
 				<div><input type="submit" value="로그인"><input onclick="location.href='logininfoView'" type="button" value="회원가입"></div>
 			</form>
-			<c:if test="${ !empty requestScope.message }">
-			<h2>${ message }</h2>
-			</c:if>
 		</div>
-		
 	</header>
-	
+</c:if>
+<c:if test="${ !empty loginUser }">
+	<div id="logout-Wrap">
+		<div id="logoutDiv">
+			<button onclick="location.href='logoutView'">${ loginUser.userId } 로그아웃</button>
+		</div>
+	</div>
+</c:if>
 </body>
 </html>

@@ -1,4 +1,4 @@
-package com.sejong.hhsweb.User.service;
+package com.sejong.hhsweb.user.service;
 
 import com.sejong.hhsweb.model.User;
 

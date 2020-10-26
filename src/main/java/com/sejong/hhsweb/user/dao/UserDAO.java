@@ -1,12 +1,12 @@
-package com.sejong.hhsweb.User.dao;
+package com.sejong.hhsweb.user.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.sejong.hhsweb.User.mapper.UserMapper;
 import com.sejong.hhsweb.model.User;
+import com.sejong.hhsweb.user.mapper.UserMapper;
 
-@Repository
+@Repository("userDAO")
 public class UserDAO {
 
 	@Autowired

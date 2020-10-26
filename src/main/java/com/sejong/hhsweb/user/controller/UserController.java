@@ -1,4 +1,4 @@
-package com.sejong.hhsweb.User.controller;
+package com.sejong.hhsweb.user.controller;
 
 import javax.servlet.http.HttpSession;
 
@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 
-import com.sejong.hhsweb.User.service.UserService;
 import com.sejong.hhsweb.model.User;
+import com.sejong.hhsweb.user.service.UserService;
 
 @Controller
 @SessionAttributes({"loginUser"})
@@ -47,13 +48,21 @@ public class UserController {
 		}
 		
 		logger.info("userLogin");
-		return "chat/chatMain";
+		return "talk/talkMain";
 	}
 	
 	@GetMapping("logininfoView")
 	public String loginInfoView() {
 		logger.info("loginInfo");
 		return "user/loginInfo";
+	}
+	
+	@GetMapping("logoutView")
+	public String logout(SessionStatus status) {
+		logger.info("logout");
+		status.setComplete();
+		
+		return "redirect:/";
 	}
 	
 	@PostMapping("userInsert")
@@ -67,10 +76,10 @@ public class UserController {
 		} catch (Exception e) {
 			logger.info("userInsert error");
 			m.addAttribute("message", "회원가입 실패!!");
-			return "user/loginMain";
+			return "redirect:/";
 		}
 		
-		return "chat/chatMain";
+		return "talk/talkMain";
 	}
 	
 	

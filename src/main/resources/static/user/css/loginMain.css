@@ -53,3 +53,19 @@ header {
 #loginInfoDiv input[type=submit], [type=reset] {
 	width: 120px;
 }
+
+#logout-Wrap{
+	min-width: 500px;
+}
+
+#logoutDiv{
+	margin: 0 auto;
+    width: 160px;
+    height: 50px;
+    border: 1px solid;
+    text-align: center;
+    line-height: 51.3px;
+}
+#logoutDiv>button{
+	font-size: 20px;
+}
