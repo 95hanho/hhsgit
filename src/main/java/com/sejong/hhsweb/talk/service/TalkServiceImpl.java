@@ -25,5 +25,15 @@ public class TalkServiceImpl implements TalkService{
 		return talkDAO.selectTalksList(tsnum);
 	}
 
+	@Override
+	public int insertTalkSpace(String tmd) {
+		return talkDAO.insertTalkSpace(tmd);
+	}
+
+	@Override
+	public void insertTalk(Talk talk) {
+		talkDAO.insertTalk(talk);
+	}
+
 
 }

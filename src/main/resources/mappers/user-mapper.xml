@@ -9,7 +9,13 @@
 	<select id="selectUser" resultMap="userMap">
 		select userid, userpwd, email
 		from user
-		where userid = #{userid}
+		where userid = #{userid} and status = 'Y'
+	</select>
+	
+	<select id="AllSelectUser" resultMap="userMap">
+		select userid, userpwd, email
+		from user
+		where userid != #{userId} and status = 'Y'
 	</select>
 	
 	<resultMap type="User" id="userMap">

@@ -11,5 +11,9 @@ public interface TalkService {
 
 	ArrayList<Talk> selectTalksList(int tsnum);
 
+	int insertTalkSpace(String tmd);
+
+	void insertTalk(Talk talk);
+
 
 }

@@ -23,4 +23,19 @@ public class TalkDAO {
 		return talkmapper.selectTalksList(tsnum);
 	}
 
+	public int insertTalkSpace(String tmd) {
+		String[] tmdList = tmd.split(",");
+		if(tmdList.length == 2) {
+			talkmapper.insertTalkSpace(tmd);
+		} else {
+			talkmapper.insertTalkSpace2(tmd);
+		}
+		return talkmapper.selectTsNum(tmd);
+		
+	}
+
+	public void insertTalk(Talk talk) {
+		talkmapper.insertTalk(talk);
+	}
+
 }

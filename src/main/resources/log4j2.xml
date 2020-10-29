@@ -13,14 +13,12 @@
 	
 	<!-- Application Loggers -->
 	<Loggers>
-		<Logger name="com.sejong.hhsweb" level="trace" additivity="false">
+		<Logger name="com.sejong.hhsweb" level="INFO" additivity="false">
 			<AppenderRef ref="console"/>
 		</Logger>
 		<Logger name="org.springframework" level="INFO" additivity="false">
 			<AppenderRef ref="console"/>
 		</Logger>
-		<Root level="TRACE">
-		</Root>
 	</Loggers>
 
 

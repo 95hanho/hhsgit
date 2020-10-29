@@ -14,4 +14,12 @@ public interface TalkMapper {
 
 	ArrayList<Talk> selectTalksList(int tsnum);
 
+	void insertTalkSpace(String tmd);
+
+	void insertTalkSpace2(String tmd);
+
+	int selectTsNum(String tmd);
+
+	void insertTalk(Talk talk);
+
 }

@@ -1,5 +1,7 @@
 package com.sejong.hhsweb.user.service;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User selectUser(String userId) {
 		return userDAO.selectUser(userId);
+	}
+
+	@Override
+	public ArrayList<User> AllSelectUser(String userId) {
+		return userDAO.AllSelectUser(userId);
 	}
 	
 }

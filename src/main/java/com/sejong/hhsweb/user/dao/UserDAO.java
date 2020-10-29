@@ -1,5 +1,7 @@
 package com.sejong.hhsweb.user.dao;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -18,6 +20,10 @@ public class UserDAO {
 
 	public User selectUser(String userId) {
 		return userMapper.selectUser(userId);
+	}
+
+	public ArrayList<User> AllSelectUser(String userId) {
+		return userMapper.AllSelectUser(userId);
 	}
 
 }

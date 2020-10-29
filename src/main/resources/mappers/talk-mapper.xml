@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sejong.hhsweb.talk.mapper.TalkMapper">
 	<select id="selectTalkList" resultType="TalkSpace">
-		select tsnum, enrolldate, participants
+		select tsnum, enrolldate, participants, ifone
 		from talkspace
 		where participants like '%' #{userId} '%'
 	</select>
@@ -21,4 +21,24 @@
 		<result column="tsnum" property="tsnum"/>
 		<result column="status" property="status"/>
 	</resultMap>
+	
+	<insert id="insertTalkSpace">
+		insert into talkspace(enrolldate, participants, ifone)
+		values(now(), #{tmd}, 'Y')
+	</insert>
+	<insert id="insertTalkSpace2">
+		insert into talkspace(enrolldate, participants, ifone)
+		values(now(), #{tmd}, 'N')
+	</insert>
+	
+	<select id="selectTsNum" resultType="_int">
+		select tsnum
+		from talkspace
+		order by enrolldate desc limit 1
+	</select>
+	
+	<insert id="insertTalk" parameterType="Talk">
+		insert into talk(enrolldate, content, userid, tsnum)
+		values(now(), #{content}, #{userId}, #{tsnum})
+	</insert>
 </mapper>

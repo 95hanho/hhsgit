@@ -9,15 +9,17 @@ public class TalkSpace {
 	private int tsnum;
 	private Date enrolldate;
 	private String participants;
+	private String ifone;
 	
 	public TalkSpace() {
 	}
 
-	public TalkSpace(int tsnum, Date enrolldate, String participants) {
+	public TalkSpace(int tsnum, Date enrolldate, String participants, String ifone) {
 		super();
 		this.tsnum = tsnum;
 		this.enrolldate = enrolldate;
 		this.participants = participants;
+		this.ifone = ifone;
 	}
 
 	public int getTsnum() {
@@ -44,10 +46,18 @@ public class TalkSpace {
 		this.participants = participants;
 	}
 
+	public String getIfone() {
+		return ifone;
+	}
+
+	public void setIfone(String ifone) {
+		this.ifone = ifone;
+	}
+
 	@Override
 	public String toString() {
-		return "TalkSpace [tsnum=" + tsnum + ", enrolldate=" + enrolldate + ", participants=" + participants + "]";
+		return "TalkSpace [tsnum=" + tsnum + ", enrolldate=" + enrolldate + ", participants=" + participants
+				+ ", ifone=" + ifone + "]";
 	}
-	
-	
+
 }

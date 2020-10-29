@@ -1,5 +1,7 @@
 package com.sejong.hhsweb.talk.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpSession;
@@ -20,35 +22,113 @@ import com.sejong.hhsweb.talk.service.TalkService;
 
 @Controller
 public class TalkController {
-	
+
 	static final Logger logger = LoggerFactory.getLogger(TalkController.class);
-	
+
 	@Autowired
 	private TalkService talkService;
-	
+
 	@GetMapping("talkinfo")
 	@ResponseBody
 	public ArrayList<TalkSpace> talkInfo(HttpSession session) {
-		User user = (User)session.getAttribute("loginUser");
+		logger.info("talkSpaces INFO");
+		
+		User user = (User) session.getAttribute("loginUser");
 		String userId = user.getUserId();
 		ArrayList<TalkSpace> talkList = talkService.selectTalkList(userId);
-		
+
 		return talkList;
 	}
-	
+
 	@GetMapping("talkView")
-	public String talkView(Model m, @RequestParam("tsnum") int tsnum, HttpSession session) {
-		ArrayList<Talk> TalkList = talkService.selectTalksList(tsnum);
-		User user = (User)session.getAttribute("loginUser");
+	public String talkView(Model m, 
+			@RequestParam("tsnum") int tsnum, 
+			HttpSession session) {
+		logger.info("old Talk ENTER");
+		
+		User user = (User) session.getAttribute("loginUser");
 		String userId = user.getUserId();
 		ArrayList<TalkSpace> talkList = talkService.selectTalkList(userId);
-		for(TalkSpace talkSpace : talkList) {
-			if(talkSpace.getTsnum() == tsnum) {
+		for (TalkSpace talkSpace : talkList) {
+			if (talkSpace.getTsnum() == tsnum) {
 				m.addAttribute("TalkTitle", talkSpace.getParticipants());
 			}
 		}
+		ArrayList<Talk> TalkList = talkService.selectTalksList(tsnum);
 		m.addAttribute("TalkList", TalkList);
+
+		return "talk/talkSpace";
+	}
+
+	@GetMapping("deletets")
+	public String deletets(Model m, @RequestParam("tsnum") int tsnum, HttpSession session) {
+
+		return "";
+	}
+
+	@GetMapping("talkmake")
+	public String talkView(Model m, @RequestParam("tmd") String tmd, HttpSession session) {
+		logger.info("new Talk view");
+		User user = (User) session.getAttribute("loginUser");
+		String userId = user.getUserId();
+
+		tmd = userId + "," + tmd;
+		String[] tmdList = tmd.split(",");
+		if (tmdList.length == 2) {
+			ArrayList<TalkSpace> talkList = talkService.selectTalkList(userId);
+			for (TalkSpace ts : talkList) {
+				if (ts.getParticipants().equals(tmd)) {
+					return "redirect:talkView?tsnum=" + ts.getTsnum();
+				}
+			}
+		}
+		m.addAttribute("TalkTitle", tmd);
+		m.addAttribute("newTalkYN", "Y");
 		
 		return "talk/talkSpace";
 	}
+	
+	@GetMapping("talkmake2")
+	@ResponseBody
+	public String talkMake(Model m, 
+			@RequestParam("tmd") String tmd, 
+			@RequestParam("content") String content,
+			HttpSession session) throws UnsupportedEncodingException {
+		logger.info("new Talk CREATE");
+		
+		int tsnum = talkService.insertTalkSpace(tmd);
+		Talk talk = new Talk();
+		talk.setContent(content);
+		talk.setUserId(((User)session.getAttribute("loginUser")).getUserId());
+		talk.setTsnum(tsnum);
+		talkService.insertTalk(talk);
+		
+		return tsnum+"";
+	}
+
+	@GetMapping("insertTalk")
+	@ResponseBody
+	public void insertTalk(Model m,
+			@RequestParam("tsnum") int tsnum,
+			@RequestParam("content") String content, 
+			HttpSession session) {
+		logger.info("INSERT Talk content");
+		
+		Talk talk = new Talk();
+		talk.setContent(content);
+		talk.setUserId(((User)session.getAttribute("loginUser")).getUserId());
+		talk.setTsnum(tsnum);
+		talkService.insertTalk(talk);
+		
+	}
+	
+	@GetMapping("selectTalks")
+	@ResponseBody
+	public ArrayList<Talk> selectTalks(@RequestParam("tsnum") int tsnum) {
+		logger.info("Talk content INFO");
+		ArrayList<Talk> TalkList = talkService.selectTalksList(tsnum);
+		
+		return TalkList;
+	}
+
 }
