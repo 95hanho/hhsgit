@@ -1,6 +1,9 @@
 /**
  * 톡방
  */
+ $(function() {
+	selectTalks();
+});
 function selectTalks() {
 	$.ajax({
 		url : 'selectTalks',
@@ -12,7 +15,7 @@ function selectTalks() {
 			$('#talks').html('');
 			var $div = $('<div id="talkMargin">');
 			$('#talks').append($div);
-			tmheight = 340 - data.length * 31.1;
+			var tmheight = 340 - data.length * 31.1;
 			$('#talkMargin').css('height', tmheight);
 			
 			for(var key in data){
@@ -26,8 +29,19 @@ function selectTalks() {
 				}
 				$div1.append($div2);
 				$('#talks').append($div1);
+				$('#talks').scrollTop($('#talks')[0].scrollHeight);
 			}
 			
+		}
+	});
+	$.ajax({
+		url : 'selectParticipant',
+		data : {
+			tsnum:tsnum
+		},
+		async:false,
+		success: function(data){
+			$('#talkHeader').text(data);
 		}
 	});
 }
@@ -36,7 +50,7 @@ function enterkey(){
 		if(!window.event.shiftKey){
 			var content = $('#talktext').val();
 			console.log(content);
-			//content = content.replace('\r\n','<br>');
+			content = content.replace('\r\n','<br>');
 			console.log(content);
 			if(sinTalkYN == 'Y'){
 				$.ajax({

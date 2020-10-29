@@ -41,4 +41,27 @@
 		insert into talk(enrolldate, content, userid, tsnum)
 		values(now(), #{content}, #{userId}, #{tsnum})
 	</insert>
+	
+	<insert id="insertTalkEntry" parameterType="TalkSpace">
+		insert into talkentry(enrolldate, tsnum, id)
+		values(now(), #{tsnum}, #{participants})
+	</insert>
+	
+	<select id="selectPartry" resultType="string">
+		select participants
+		from talkspace
+		where tsnum = #{tsnum}
+	</select>
+	
+	<update id="updateTalkSpace" parameterType="TalkSpace">
+		update talkspace
+		set participants = #{participants}
+		where tsnum = #{tsnum}
+	</update>
+	
+	<update id="updateTalkEntry" parameterType="TalkEntry">
+		update talkentry
+		set enrolldate = now()
+		where tsnum = #{tsnum} and id = #{userId}
+	</update>
 </mapper>

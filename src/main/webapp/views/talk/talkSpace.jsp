@@ -16,23 +16,15 @@
 	
 	<section>
 		<div id="talksDiv">
-			<div id="talkHeader">${ TalkTitle }</div>
+			<div id="talkHeader">${TalkTitle}</div>
 			<div id="talks">
-				<c:set var="talkcount" value="${ TalkList.size() }"/>
 				<div id="talkMargin"></div>
-				<c:forEach var="t" items="${ TalkList }">
-					<c:if test="${ t.userId == loginUser.userId }">
 				<div class="talkline">
-					<div class="mytalk">${t.userId} : ${ t.content }</div>
+					<div class="mytalk">나의아이디 : 채팅내용</div>
 				</div>
-					</c:if>
-					<c:if test="${ t.userId != loginUser.userId }">
 				<div class="talkline">
-					<div class="otherstalk">${t.userId} : ${ t.content }</div>
+					<div class="otherstalk">타인아이디 : 채팅내용</div>
 				</div>
-					</c:if>
-				<c:set var="tsnum" value="${ t.tsnum }"/>
-				</c:forEach>
 			</div>
 		</div>
 		<div id="backDiv" >
@@ -45,10 +37,6 @@
 	</section>
 </body>
 <script>
-	if("${talkcount}" != ""){
-		var tmheight = 340 - '${talkcount}' * 31.1;
-		$('#talkMargin').css('height', tmheight);
-	}
 	sinTalkYN = 'N';
 	if("${newTalkYN}" != ""){
 		sinTalkYN = '${newTalkYN}';

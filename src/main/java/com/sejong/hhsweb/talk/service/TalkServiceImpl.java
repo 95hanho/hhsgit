@@ -35,5 +35,15 @@ public class TalkServiceImpl implements TalkService{
 		talkDAO.insertTalk(talk);
 	}
 
+	@Override
+	public void insertTalkEntry(TalkSpace ts) {
+		talkDAO.insertTalkEntry(ts);
+	}
+
+	@Override
+	public void exitTalkSpace(TalkSpace ts, String userId) {
+		talkDAO.exitTalkSpace(ts, userId);
+	}
+
 
 }

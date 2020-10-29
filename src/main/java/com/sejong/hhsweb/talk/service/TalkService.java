@@ -15,5 +15,11 @@ public interface TalkService {
 
 	void insertTalk(Talk talk);
 
+	void insertTalkEntry(TalkSpace ts);
+	
+	void exitTalkSpace(TalkSpace ts, String userId);
+
+	
+
 
 }

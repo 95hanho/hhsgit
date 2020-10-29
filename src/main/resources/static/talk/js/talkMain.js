@@ -17,7 +17,7 @@ function talkInfo() {
 				$div.text(data[key].participants+'('+partyNum.length+')');
 				$div.attr('ondblclick', 'talkView(' + data[key].tsnum + ');');
 				var $button = $('<button>');
-				$button.attr('onclick', 'deletets(' + data[key].tsnum + ',"'+ data[key].ifone +'");');
+				$button.attr('onclick', 'deletets(' + data[key].tsnum + ',"'+ data[key].ifone +'","'+data[key].participants +'");');
 				$button.text('X');
 				$div.append($button);
 				$('#talkDiv').append($div);
@@ -28,8 +28,19 @@ function talkInfo() {
 function talkView(tsnum){
 	location.href="talkView?tsnum=" + tsnum;
 }
-function deletets(tsnum, ifone){
-	location.href="deletets?tsnum=" + tsnum + "&ifone=" + ifone;
+function deletets(tsnum, ifone, tmd){
+	$.ajax({
+		url: 'deletets',
+		data:{
+			tsnum:tsnum,
+			ifone:ifone
+		},
+		async:false,
+		success:function(data){
+			talkInfo();
+			send_message('talkmake:'+tmd);
+		}
+	});
 }
 function guestAdd(userId){
 	var dupltest = true;

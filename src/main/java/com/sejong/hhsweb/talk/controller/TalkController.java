@@ -1,7 +1,6 @@
 package com.sejong.hhsweb.talk.controller;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpSession;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.sejong.hhsweb.model.Talk;
 import com.sejong.hhsweb.model.TalkSpace;
 import com.sejong.hhsweb.model.User;
@@ -54,16 +54,25 @@ public class TalkController {
 				m.addAttribute("TalkTitle", talkSpace.getParticipants());
 			}
 		}
-		ArrayList<Talk> TalkList = talkService.selectTalksList(tsnum);
-		m.addAttribute("TalkList", TalkList);
+		
+		m.addAttribute("tsnum", tsnum);
 
 		return "talk/talkSpace";
 	}
 
 	@GetMapping("deletets")
-	public String deletets(Model m, @RequestParam("tsnum") int tsnum, HttpSession session) {
-
-		return "";
+	@ResponseBody
+	public void deletets(Model m, 
+			@RequestParam("tsnum") int tsnum,
+			@RequestParam("ifone") String ifone,
+			HttpSession session) {
+		String userId = ((User) session.getAttribute("loginUser")).getUserId();
+		
+		TalkSpace ts = new TalkSpace();
+		ts.setTsnum(tsnum);
+		ts.setIfone(ifone);
+		talkService.exitTalkSpace(ts, userId);
+		
 	}
 
 	@GetMapping("talkmake")
@@ -97,6 +106,12 @@ public class TalkController {
 		logger.info("new Talk CREATE");
 		
 		int tsnum = talkService.insertTalkSpace(tmd);
+		// 톡방이 만들어 질 때 엔트리도 작성//////////////////
+		TalkSpace ts = new TalkSpace();
+		ts.setParticipants(tmd);
+		ts.setTsnum(tsnum);
+		talkService.insertTalkEntry(ts);
+		// 엔트리 작성 구간////////////////////////////
 		Talk talk = new Talk();
 		talk.setContent(content);
 		talk.setUserId(((User)session.getAttribute("loginUser")).getUserId());
@@ -129,6 +144,21 @@ public class TalkController {
 		ArrayList<Talk> TalkList = talkService.selectTalksList(tsnum);
 		
 		return TalkList;
+	}
+	
+	@GetMapping("selectParticipant")
+	@ResponseBody
+	public String selectParticipant(@RequestParam("tsnum") int tsnum, HttpSession session) {
+		String TalkTitle = "";
+		
+		String userId = ((User)session.getAttribute("loginUser")).getUserId();
+		ArrayList<TalkSpace> talkList = talkService.selectTalkList(userId);
+		for (TalkSpace talkSpace : talkList) {
+			if (talkSpace.getTsnum() == tsnum) {
+				TalkTitle = talkSpace.getParticipants();
+			}
+		}
+		return TalkTitle;
 	}
 
 }
