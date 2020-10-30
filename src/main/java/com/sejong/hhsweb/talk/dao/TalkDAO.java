@@ -25,6 +25,7 @@ public class TalkDAO {
 	}
 
 	public int insertTalkSpace(String tmd) {
+		// 1:1인지 단체톡인지 구별하여 입력
 		String[] tmdList = tmd.split(",");
 		if (tmdList.length == 2) {
 			talkmapper.insertTalkSpace(tmd);
@@ -36,11 +37,14 @@ public class TalkDAO {
 	}
 
 	public void insertTalk(Talk talk) {
+		// 톡추가
+		// 톡date를 최신으로
 		talkmapper.insertTalk(talk);
 		talkmapper.updateTSdate(talk);
 	}
 
 	public void insertTalkEntry(TalkSpace ts) {
+		// 톡 입장명부 추가
 		String[] tsList = ts.getParticipants().split(",");
 		for (String user : tsList) {
 			ts.setParticipants(user);
@@ -49,9 +53,7 @@ public class TalkDAO {
 	}
 
 	public void exitTalkSpace(TalkSpace ts, String userId) {
-		System.out.println("exitTalkSpace DAO");
-		System.out.println(ts.getIfone());
-
+		// 톡방 나가기
 		if (ts.getIfone().equals("N")) {
 			String updateParty = null;
 			String participants = talkmapper.selectPartry(ts.getTsnum());
@@ -91,6 +93,7 @@ public class TalkDAO {
 
 	}
 
+	// 톡 유저 추가
 	public void updateTalkSpace(TalkSpace ts) {
 		talkmapper.updateTalkSpace(ts);
 	}

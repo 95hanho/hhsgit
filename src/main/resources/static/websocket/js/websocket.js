@@ -35,6 +35,7 @@ function onOpen(evt, data) {
 
 function onMessage(evt) {
 	if(evt.data == 'reTalkInfo'){
+		// talkInfo()가 존재할 시 실행, selectTalks()가 존재할 시 실행
 		if(typeof talkInfo =='function'){
 			talkInfo();
 		}
@@ -49,6 +50,7 @@ function onError(evt) {
 }
 
 $(document).ready(function(){
+	// 서버로부터 웹소켓메시지가 왔으면 메시지와 실행, 아니면 그냥 실행
 	if(webmessage == ''){
 		send_message();
 	} else{

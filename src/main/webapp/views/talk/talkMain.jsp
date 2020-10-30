@@ -16,15 +16,16 @@
 
 	<br>
 	<section>
-		<div id="talkDiv">
+		<div id="talkDiv">	<!-- 참여 채팅방 목록 -->
 			<div class="talkSpaces" ondblclick="">&nbsp;채팅방참여자들
 				<label></label>
 				<button>X</button>
 			</div>
 		</div>
+		
 		<div id="talkadd">
-			<div id="talkaddBtn" onclick="userOut();">-</div>
-			<div id="userListDiv">
+			<div id="talkaddBtn" onclick="userOut();">-</div> <!-- 초대유저제외 -->
+			<div id="userListDiv"> <!-- 초대가능유저목록 -->
 				<div id="userListHeader">접속유저목록</div>
 				<div id="userList">
 					<c:forEach var="aul" items="${ allUserList }">
@@ -33,12 +34,13 @@
 				</div>
 			</div>
 		</div>
-		<div id="talkmakeDiv"></div>
+		<div id="talkmakeDiv"></div> <!-- 초대할사람 -->
 		<button id="talkmakeBtn" onclick="talkmake();">톡방생성</button>
 	</section>
 	
 </body>
 <script>
+	// 웹소켓메시지
 	var webmessage = '${ webmessage }';
 </script>
 </html>

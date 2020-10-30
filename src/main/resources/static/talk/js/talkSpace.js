@@ -1,12 +1,16 @@
 /**
  * 톡방
+ 1. 동기적으로 새로고침해줘야할 톡방 내용들(채팅목록,참여자명단,초대가능명단)
+ 2. 채팅입력엔터키 입력 시 채팅생성 및 채팅추가, 쉬프트와 같이 누르면 줄바꿈
+ 3. 현재 톡방 나가기
+ 4. 새로운 유저 초대하기
  */
  $(function() {
- 	if(tsnum != ''){
+ 	if(tsnum != ''){ // 처음 화면만 들어올떄는 채팅방생성이 안되었으므로 null체크
  		selectTalks();
  	}
 	
-	
+	// 초대목록 보여주기, 숨기기
 	$('#inviteshowBtn').click(function(){
 		if($('#inviteshowBtn').val() == '초대목록보기'){
 			$('#inviteListDiv').show();
@@ -17,7 +21,9 @@
 		}
 	});
 });
+// 동기적으로 새로고침해줘야할 톡방 내용들
 function selectTalks() {
+	// 채팅목록을 가져옴
 	$.ajax({
 		url : 'selectTalks',
 		data : {
@@ -47,6 +53,7 @@ function selectTalks() {
 			
 		}
 	});
+	// 참여목록을 가져오고, 1:1채팅이면 새로 초대가 불가능, 단체 채팅은 가능
 	$.ajax({
 		url : 'selectParticipant',
 		data : {
@@ -63,6 +70,7 @@ function selectTalks() {
 			}
 		}
 	});
+	// 추가 초대가능한 목록을 보여줌
 	$.ajax({
 		url : 'selectIUlist',
 		data : {
@@ -85,12 +93,13 @@ function selectTalks() {
 		}	
 	});
 }
+// 채팅입력엔터키 입력 시, 쉬프트와 같이 누르면 줄바꿈
 function enterkey(){
 	if(window.event.keyCode == 13){
 		if(!window.event.shiftKey){
 			var content = $('#talktext').val();
 			content = content.replace('\r\n','<br>');
-			if(sinTalkYN == 'Y'){
+			if(sinTalkYN == 'Y'){ // 새로 만든 채팅이면 채팅입력과 동시에 채팅방 생성
 				$.ajax({
 					url: 'talkmake2',
 					data: {
@@ -106,7 +115,7 @@ function enterkey(){
 						sinTalkYN = 'N';
 					}
 				});
-			} else if(sinTalkYN == 'N'){
+			} else if(sinTalkYN == 'N'){ // 만들어진 채팅이면 톡추가만 해줌
 				$.ajax({
 					url: 'insertTalk',
 					data: {
@@ -121,13 +130,15 @@ function enterkey(){
 					}
 				});
 			}
-			return false;
+			return false; // 기존 엔터키(줄바꿈) 막기
 		}
 	}
 }
+// 현재 톡방 나가기
 function exitTalk(){
 	location.href="exitTalk?tsnum="+tsnum;
 }
+// 새로운 유저 초대하기
 function inviteUser(userId){
 	$.ajax({
 		url: 'inviteUser',

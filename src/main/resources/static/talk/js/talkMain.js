@@ -1,9 +1,16 @@
 /**
  * 톡메인화면
+ 1. 채팅창 목록소환함수
+ 2. 톡방 나가기
+ 3. 더블클릭 후 톡방으로 들어감(기존있던 채팅방)
+ 4.	새로운 채팅방을 생성하면서 톡방화면으로 들어감(채팅방 생성은x)
+ 5. 채팅방 초대할 사람 추가
+ 6. 초대할 사람제외(뒤부터 제외시킴)
  */
 $(function() {
-	talkInfo();
+	talkInfo(); // 채팅창목록소환
 });
+// 채팅창 목록소환함수
 function talkInfo() {
 	$.ajax({
 		url : 'talkinfo',
@@ -26,9 +33,7 @@ function talkInfo() {
 		}
 	});
 }
-function talkView(tsnum){
-	location.href="talkView?tsnum=" + tsnum;
-}
+// 톡방 나가기
 function deletets(tsnum, ifone, tmd){
 	$.ajax({
 		url: 'deletets',
@@ -43,6 +48,20 @@ function deletets(tsnum, ifone, tmd){
 		}
 	});
 }
+// 더블클릭 후 톡방으로 들어감(기존있던 채팅방)
+function talkView(tsnum){
+	location.href="talkView?tsnum=" + tsnum;
+}
+// 새로운 채팅방을 생성하면서 톡방화면으로 들어감(채팅방 생성은x)
+function talkmake(){
+	var tmd = $('#talkmakeDiv').text();
+	if(tmd.length=='0'){
+		alert('참가자를 선택하세요');
+	} else{
+		location.href="talkmake?tmd="+tmd;
+	}
+}
+// 채팅방 초대할 사람 추가
 function guestAdd(userId){
 	var dupltest = true;
 	var tmd = $('#talkmakeDiv').text().split(',');
@@ -60,14 +79,8 @@ function guestAdd(userId){
 		}
 	}
 }
-function talkmake(){
-	var tmd = $('#talkmakeDiv').text();
-	if(tmd.length=='0'){
-		alert('참가자를 선택하세요');
-	} else{
-		location.href="talkmake?tmd="+tmd;
-	}
-}
+
+// 초대할 사람제외(뒤부터 제외시킴)
 function userOut(){
 	var tmd = $('#talkmakeDiv').text();
 	
