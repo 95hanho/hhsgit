@@ -34,7 +34,6 @@ function onOpen(evt, data) {
 }
 
 function onMessage(evt) {
-	console.log(evt.data); // 서버에서 보낸 data(텍스트)를 읽음
 	if(evt.data == 'reTalkInfo'){
 		if(typeof talkInfo =='function'){
 			talkInfo();
@@ -50,5 +49,9 @@ function onError(evt) {
 }
 
 $(document).ready(function(){
-	send_message();
+	if(webmessage == ''){
+		send_message();
+	} else{
+		send_message(webmessage);
+	}
 });

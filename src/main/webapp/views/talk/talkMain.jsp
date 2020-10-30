@@ -18,11 +18,12 @@
 	<section>
 		<div id="talkDiv">
 			<div class="talkSpaces" ondblclick="">&nbsp;채팅방참여자들
+				<label></label>
 				<button>X</button>
 			</div>
 		</div>
 		<div id="talkadd">
-			<div id="talkaddBtn">+</div>
+			<div id="talkaddBtn" onclick="userOut();">-</div>
 			<div id="userListDiv">
 				<div id="userListHeader">접속유저목록</div>
 				<div id="userList">
@@ -36,6 +37,8 @@
 		<button id="talkmakeBtn" onclick="talkmake();">톡방생성</button>
 	</section>
 	
-	
 </body>
+<script>
+	var webmessage = '${ webmessage }';
+</script>
 </html>

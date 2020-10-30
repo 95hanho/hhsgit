@@ -9,7 +9,7 @@ public interface TalkService {
 
 	ArrayList<TalkSpace> selectTalkList(String userId);
 
-	ArrayList<Talk> selectTalksList(int tsnum);
+	ArrayList<Talk> selectTalksList(Talk t);
 
 	int insertTalkSpace(String tmd);
 
@@ -18,6 +18,8 @@ public interface TalkService {
 	void insertTalkEntry(TalkSpace ts);
 	
 	void exitTalkSpace(TalkSpace ts, String userId);
+
+	void updateTalkSpace(TalkSpace ts);
 
 	
 

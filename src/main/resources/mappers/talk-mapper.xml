@@ -2,17 +2,29 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sejong.hhsweb.talk.mapper.TalkMapper">
 	<select id="selectTalkList" resultType="TalkSpace">
-		select tsnum, enrolldate, participants, ifone
-		from talkspace
-		where participants like '%' #{userId} '%'
+		select *
+		from 
+			(select tsnum, enrolldate, participants, ifone
+			from talkspace
+			where participants like '%' #{userId} '%' and ifone = 'N'
+			UNION
+			select tsnum, t.enrolldate, participants, ifone
+			from talkspace t
+			join talkentry e using(tsnum)
+			where participants like '%' #{userId} '%' 
+			and ifone = 'Y' 
+			and t.enrolldate >= e.enrolldate
+			and id = #{userId}) c
+		order by enrolldate desc
 	</select>
 	
-	<select id="selectTalksList" resultMap="talkMap">
+	<select id="selectTalksList" parameterType="Talk" resultMap="talkMap">
 		select *
 		from talk
 		where tsnum = #{tsnum}
+		and enrolldate >= (select enrolldate from talkentry where id = #{userId} and tsnum = #{tsnum})
 	</select>
-	
+		
 	<resultMap type="Talk" id="talkMap">
 		<id column="tnum" property="tnum"/>
 		<result column="enrolldate" property="enrollDate"/>
@@ -42,6 +54,12 @@
 		values(now(), #{content}, #{userId}, #{tsnum})
 	</insert>
 	
+	<update id="updateTSdate" parameterType="Talk">
+		update talkspace
+		set enrolldate = now()
+		where tsnum = #{tsnum}
+	</update>
+	
 	<insert id="insertTalkEntry" parameterType="TalkSpace">
 		insert into talkentry(enrolldate, tsnum, id)
 		values(now(), #{tsnum}, #{participants})
@@ -59,9 +77,15 @@
 		where tsnum = #{tsnum}
 	</update>
 	
-	<update id="updateTalkEntry" parameterType="TalkEntry">
+	<delete id="deleteTalkEntry" parameterType="TalkEntry">
+		delete from talkentry
+		where tsnum = #{tsnum} and id = #{userId}
+	</delete>
+	
+	<delete id="updateTalkEntry" parameterType="TalkEntry">
 		update talkentry
 		set enrolldate = now()
 		where tsnum = #{tsnum} and id = #{userId}
-	</update>
+	</delete>
+	
 </mapper>

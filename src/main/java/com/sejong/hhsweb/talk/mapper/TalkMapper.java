@@ -13,7 +13,7 @@ public interface TalkMapper {
 
 	ArrayList<TalkSpace> selectTalkList(String userId);
 
-	ArrayList<Talk> selectTalksList(int tsnum);
+	ArrayList<Talk> selectTalksList(Talk t);
 
 	void insertTalkSpace(String tmd);
 
@@ -22,6 +22,8 @@ public interface TalkMapper {
 	int selectTsNum(String tmd);
 
 	void insertTalk(Talk talk);
+	
+	void updateTSdate(Talk talk);
 
 	void insertTalkEntry(TalkSpace ts);
 
@@ -29,7 +31,11 @@ public interface TalkMapper {
 
 	void updateTalkSpace(TalkSpace ts);
 
+	void deleteTalkEntry(TalkEntry te);
+
 	void updateTalkEntry(TalkEntry te);
+
+	
 
 
 }

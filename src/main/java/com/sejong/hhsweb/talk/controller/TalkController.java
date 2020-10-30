@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.sejong.hhsweb.model.Talk;
 import com.sejong.hhsweb.model.TalkSpace;
 import com.sejong.hhsweb.model.User;
 import com.sejong.hhsweb.talk.service.TalkService;
+import com.sejong.hhsweb.user.service.UserService;
 
 @Controller
 public class TalkController {
@@ -27,6 +27,9 @@ public class TalkController {
 
 	@Autowired
 	private TalkService talkService;
+	
+	@Autowired
+	private UserService userService;
 
 	@GetMapping("talkinfo")
 	@ResponseBody
@@ -72,6 +75,34 @@ public class TalkController {
 		ts.setTsnum(tsnum);
 		ts.setIfone(ifone);
 		talkService.exitTalkSpace(ts, userId);
+		
+	}
+	
+	@GetMapping("exitTalk")
+	public String exitTalk(Model m,
+			@RequestParam("tsnum") int tsnum,
+			HttpSession session) {
+		String userId = ((User) session.getAttribute("loginUser")).getUserId();
+		String ifone = null;
+		String tmd = null;
+		
+		ArrayList<TalkSpace> tsList = talkService.selectTalkList(userId);
+		for(TalkSpace talkSpace : tsList) {
+			if(talkSpace.getTsnum() == tsnum) {
+				ifone = talkSpace.getIfone();
+				tmd = talkSpace.getParticipants();
+			}
+		}
+		
+		TalkSpace ts = new TalkSpace();
+		ts.setTsnum(tsnum);
+		ts.setIfone(ifone);
+		talkService.exitTalkSpace(ts, userId);
+		
+		ArrayList<User> allUserList = userService.AllSelectUser(userId);
+		m.addAttribute("allUserList", allUserList);
+		m.addAttribute("webmessage", "talkmake:"+tmd);
+		return "talk/talkMain";
 		
 	}
 
@@ -139,26 +170,83 @@ public class TalkController {
 	
 	@GetMapping("selectTalks")
 	@ResponseBody
-	public ArrayList<Talk> selectTalks(@RequestParam("tsnum") int tsnum) {
+	public ArrayList<Talk> selectTalks(@RequestParam("tsnum") int tsnum,
+			HttpSession session) {
 		logger.info("Talk content INFO");
-		ArrayList<Talk> TalkList = talkService.selectTalksList(tsnum);
+		String userId = ((User)session.getAttribute("loginUser")).getUserId();
+		
+		Talk t = new Talk();
+		t.setUserId(userId);
+		t.setTsnum(tsnum);
+		ArrayList<Talk> TalkList = talkService.selectTalksList(t);
 		
 		return TalkList;
 	}
 	
 	@GetMapping("selectParticipant")
 	@ResponseBody
-	public String selectParticipant(@RequestParam("tsnum") int tsnum, HttpSession session) {
-		String TalkTitle = "";
+	public TalkSpace selectParticipant(@RequestParam("tsnum") int tsnum, HttpSession session) {
+		TalkSpace resultTS = new TalkSpace();
 		
 		String userId = ((User)session.getAttribute("loginUser")).getUserId();
 		ArrayList<TalkSpace> talkList = talkService.selectTalkList(userId);
 		for (TalkSpace talkSpace : talkList) {
 			if (talkSpace.getTsnum() == tsnum) {
-				TalkTitle = talkSpace.getParticipants();
+				resultTS = talkSpace;
 			}
 		}
-		return TalkTitle;
+		return resultTS;
 	}
-
+	
+		@GetMapping("selectIUlist")
+		@ResponseBody
+		public ArrayList<User> selectIUlist(HttpSession session,
+				@RequestParam("tmd") String tmd){
+			String userId = ((User)session.getAttribute("loginUser")).getUserId();
+			ArrayList<User> allUserList = userService.AllSelectUser(userId);
+			String[] inUserList = tmd.split(",");
+			ArrayList<User> inviteUserList = new ArrayList<User>();
+			
+			for(int i=0;i<allUserList.size();i++) {
+				boolean dupl = true;
+				for(String inUser : inUserList) {
+					if(inUser.equals(allUserList.get(i).getUserId())) {
+						dupl = false;
+					}
+				}
+				if(dupl) {
+					inviteUserList.add(allUserList.get(i));
+				}
+			}
+			return inviteUserList;
+		}
+		
+		@GetMapping("inviteUser")
+		@ResponseBody
+		public void inviteUser(@RequestParam("tsnum") int tsnum,
+				@RequestParam("userId") String inviteId,
+				@RequestParam("tmd") String tmd) {
+			
+			// 채팅방 인원 추가
+			tmd = tmd + "," + inviteId;
+			TalkSpace ts = new TalkSpace();
+			ts.setTsnum(tsnum);
+			ts.setParticipants(tmd);
+			talkService.updateTalkSpace(ts);
+			
+			// 엔트리 추가
+			TalkSpace ts2 = new TalkSpace();
+			ts2.setParticipants(inviteId);
+			ts2.setTsnum(tsnum);
+			talkService.insertTalkEntry(ts2);
+			
+			// 입장 표시 채팅 추가
+			Talk t = new Talk();
+			t.setContent("님이 들어왔습니다.");
+			t.setTsnum(tsnum);
+			t.setUserId(inviteId);
+			talkService.insertTalk(t);
+			
+			
+		}
 }

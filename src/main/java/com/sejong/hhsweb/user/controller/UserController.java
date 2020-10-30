@@ -56,13 +56,13 @@ public class UserController {
 			String userId = user.getUserId();
 			ArrayList<User> allUserList = userService.AllSelectUser(userId);
 			m.addAttribute("allUserList", allUserList);
+			logger.info(userId + "login success");
 		} else {
 			logger.info("login fail!!");
 			m.addAttribute("message", "로그인 실패!!");
 			return "user/loginMain";
 		}
 		
-		logger.info("userLogin");
 		return "talk/talkMain";
 	}
 	

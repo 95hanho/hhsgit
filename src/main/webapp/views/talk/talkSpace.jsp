@@ -18,6 +18,7 @@
 		<div id="talksDiv">
 			<div id="talkHeader">${TalkTitle}</div>
 			<div id="talks">
+				<!-- 
 				<div id="talkMargin"></div>
 				<div class="talkline">
 					<div class="mytalk">나의아이디 : 채팅내용</div>
@@ -25,6 +26,7 @@
 				<div class="talkline">
 					<div class="otherstalk">타인아이디 : 채팅내용</div>
 				</div>
+				 -->
 			</div>
 		</div>
 		<div id="backDiv" >
@@ -33,7 +35,20 @@
 		<div id="talkchatDiv">
 			<div id="talkchatId">${ loginUser.userId }(Shift+Enter=줄바꿈):</div>
 			<textarea id="talktext" onkeydown="return enterkey();"></textarea>
+			<input id="inviteshowBtn" type="button" value="초대목록보기">
+			<button onclick="exitTalk();">채팅방 나가기</button>
+			<div id="inviteListDiv">
+				<div id="inviteHeader">초대목록</div>
+				<div id="invitelineDiv">
+					<div class="inviteline">
+						<label>한호성</label>
+						<button>+</button>
+					</div>
+				</div>
+				
+			</div>
 		</div>
+		
 	</section>
 </body>
 <script>
@@ -44,5 +59,6 @@
 	var tsnum = '${ tsnum }';
 	var userid = '${ loginUser.userId }';
 	var tmd = '${ TalkTitle }';
+	var webmessage = '${ webmessage }';
 </script>
 </html>

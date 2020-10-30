@@ -9,16 +9,17 @@ function talkInfo() {
 		url : 'talkinfo',
 		async : false,
 		success : function(data) {
-			console.log(data);
 			$('#talkDiv').html('');
 			for ( var key in data) {
 				var $div = $('<div class="talkSpaces">');
+				var $label = $('<label>');
 				var partyNum = data[key].participants.split(',');
-				$div.text(data[key].participants+'('+partyNum.length+')');
-				$div.attr('ondblclick', 'talkView(' + data[key].tsnum + ');');
+				$label.text('('+partyNum.length+')'+data[key].participants);
+				$label.attr('ondblclick', 'talkView(' + data[key].tsnum + ');');
 				var $button = $('<button>');
 				$button.attr('onclick', 'deletets(' + data[key].tsnum + ',"'+ data[key].ifone +'","'+data[key].participants +'");');
 				$button.text('X');
+				$div.append($label);
 				$div.append($button);
 				$('#talkDiv').append($div);
 			}
@@ -65,5 +66,18 @@ function talkmake(){
 		alert('참가자를 선택하세요');
 	} else{
 		location.href="talkmake?tmd="+tmd;
+	}
+}
+function userOut(){
+	var tmd = $('#talkmakeDiv').text();
+	
+	if(tmd.length!='0'){
+		var tmdList = tmd.split(',');
+		if(tmdList.length=='1'){
+			$('#talkmakeDiv').text('');
+		} else{
+			var lastdot = tmd.lastIndexOf(',');
+			$('#talkmakeDiv').text(tmd.substring(0, lastdot));
+		}
 	}
 }

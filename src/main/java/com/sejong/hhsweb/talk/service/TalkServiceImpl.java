@@ -21,8 +21,8 @@ public class TalkServiceImpl implements TalkService{
 	}
 
 	@Override
-	public ArrayList<Talk> selectTalksList(int tsnum) {
-		return talkDAO.selectTalksList(tsnum);
+	public ArrayList<Talk> selectTalksList(Talk t) {
+		return talkDAO.selectTalksList(t);
 	}
 
 	@Override
@@ -43,6 +43,11 @@ public class TalkServiceImpl implements TalkService{
 	@Override
 	public void exitTalkSpace(TalkSpace ts, String userId) {
 		talkDAO.exitTalkSpace(ts, userId);
+	}
+
+	@Override
+	public void updateTalkSpace(TalkSpace ts) {
+		talkDAO.updateTalkSpace(ts);
 	}
 
 

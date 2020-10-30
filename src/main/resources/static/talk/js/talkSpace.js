@@ -2,7 +2,20 @@
  * 톡방
  */
  $(function() {
-	selectTalks();
+ 	if(tsnum != ''){
+ 		selectTalks();
+ 	}
+	
+	
+	$('#inviteshowBtn').click(function(){
+		if($('#inviteshowBtn').val() == '초대목록보기'){
+			$('#inviteListDiv').show();
+			$('#inviteshowBtn').val('초대목록숨기기');
+		} else{
+			$('#inviteListDiv').hide();
+			$('#inviteshowBtn').val('초대목록보기');
+		}
+	});
 });
 function selectTalks() {
 	$.ajax({
@@ -41,17 +54,42 @@ function selectTalks() {
 		},
 		async:false,
 		success: function(data){
-			$('#talkHeader').text(data);
+			$('#talkHeader').text(data.participants);
+			tmd = data.participants;
+			if(data.ifone == 'Y'){
+				$('#inviteshowBtn').hide();
+			} else if(data.ifone == 'N'){
+				$('#inviteshowBtn').show();
+			}
 		}
+	});
+	$.ajax({
+		url : 'selectIUlist',
+		data : {
+			tmd:tmd
+		},
+		async:false,
+		success: function(data){
+			$('#invitelineDiv').html('');
+			for(var key in data){
+				var $div = $('<div class="inviteline">');
+				var $label = $('<label>');
+				var $button = $('<button>');
+				$label.text(data[key].userId);
+				$button.text('+');
+				$button.attr('onclick','inviteUser("'+ data[key].userId +'");');
+				$div.append($label);
+				$div.append($button);
+				$('#invitelineDiv').append($div);
+			}
+		}	
 	});
 }
 function enterkey(){
 	if(window.event.keyCode == 13){
 		if(!window.event.shiftKey){
 			var content = $('#talktext').val();
-			console.log(content);
 			content = content.replace('\r\n','<br>');
-			console.log(content);
 			if(sinTalkYN == 'Y'){
 				$.ajax({
 					url: 'talkmake2',
@@ -86,4 +124,22 @@ function enterkey(){
 			return false;
 		}
 	}
+}
+function exitTalk(){
+	location.href="exitTalk?tsnum="+tsnum;
+}
+function inviteUser(userId){
+	$.ajax({
+		url: 'inviteUser',
+		data: {
+			tsnum:tsnum,
+			userId:userId,
+			tmd:tmd
+		},
+		async:false,
+		success:function(data){
+			selectTalks();
+			send_message('talkmake:'+tmd);
+		}
+	});
 }

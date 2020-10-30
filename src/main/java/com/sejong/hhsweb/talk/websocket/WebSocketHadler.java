@@ -68,7 +68,7 @@ public class WebSocketHadler extends TextWebSocketHandler {
 	
 	private String getUserId(WebSocketSession session) {
 		Map<String, Object> httpSession = session.getAttributes();
-		User loginUser = (User)httpSession.get("loginUser");
+		User loginUser = (User)httpSession.get("loginUser");	
 		
 		return loginUser.getUserId();
 	}
