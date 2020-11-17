@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import com.sejong.hhsweb.model.Talk;
 import com.sejong.hhsweb.model.TalkEntry;
 import com.sejong.hhsweb.model.TalkSpace;
+import com.sejong.hhsweb.model.UploadFile;
 
 @Mapper
 public interface TalkMapper {
@@ -34,6 +35,10 @@ public interface TalkMapper {
 	void deleteTalkEntry(TalkEntry te);
 
 	void updateTalkEntry(TalkEntry te);
+
+	void insertUploadFile(UploadFile uf);
+
+	UploadFile insertSelectImage(int tnum);
 
 	
 

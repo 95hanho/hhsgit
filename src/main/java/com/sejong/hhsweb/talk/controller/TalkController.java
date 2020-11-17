@@ -1,8 +1,17 @@
 package com.sejong.hhsweb.talk.controller;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Properties;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -11,12 +20,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.sejong.hhsweb.model.Talk;
 import com.sejong.hhsweb.model.TalkSpace;
+import com.sejong.hhsweb.model.UploadFile;
 import com.sejong.hhsweb.model.User;
+import com.sejong.hhsweb.talk.download.DownloadView;
 import com.sejong.hhsweb.talk.service.TalkService;
 import com.sejong.hhsweb.user.service.UserService;
 
@@ -37,12 +52,24 @@ public class TalkController {
 	 11.초대가능목록에서 초대하기
 	*/
 	static final Logger logger = LoggerFactory.getLogger(TalkController.class);
+	private Properties prop = new Properties();
 
 	@Autowired
 	private TalkService talkService;
 
 	@Autowired
 	private UserService userService;
+	
+	public TalkController() {
+		String fileName = TalkController.class.getResource("/path.properties").getPath();
+		try {
+			prop.load(new FileReader(fileName));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	// 채팅방목록 가져오기
 	@GetMapping("talkinfo")
@@ -50,8 +77,7 @@ public class TalkController {
 	public ArrayList<TalkSpace> talkInfo(HttpSession session) {
 		logger.info("talkSpaces INFO");
 
-		User user = (User) session.getAttribute("loginUser");
-		String userId = user.getUserId();
+		String userId = ((User)session.getAttribute("loginUser")).getUserId();
 		ArrayList<TalkSpace> talkList = talkService.selectTalkList(userId);
 
 		return talkList;
@@ -259,5 +285,84 @@ public class TalkController {
 		t.setUserId(inviteId);
 		talkService.insertTalk(t);
 
+	}
+	
+	
+	// ------------------기본형태는 완성 ------------------------
+	
+	// 채팅에 사진업로드
+	@PostMapping(value= "filechat", produces="text/plain")
+	@ResponseBody
+	public void fileChatting(MultipartHttpServletRequest multi, @RequestParam("tsnum") int tsnum,
+			HttpSession session) {
+		logger.info("file save");
+		
+		String userId = ((User)session.getAttribute("loginUser")).getUserId();
+//		// "파일"이라는 톡을 남김 그리고 tnum을 가져옴
+		Talk t = new Talk();
+//		t.setContent("파일");
+		t.setTsnum(tsnum);
+		t.setUserId(userId);
+//		talkService.insertTalk(t);
+		
+		ArrayList<Talk> TalkList = talkService.selectTalksList(t);
+		int tnum = TalkList.get(TalkList.size()-1).getTnum();
+		//	파일을 저장하고, uploadfile테이블에 파일정보 저장
+		MultipartFile uploadFile = multi.getFile("file");
+		String renameFileName = saveFile(uploadFile, "uploadPath");
+		UploadFile uf = new UploadFile();
+		uf.setOriginName(uploadFile.getOriginalFilename());
+		uf.setFileRename(renameFileName);
+		uf.setTnum(tnum);
+		talkService.insertUploadFile(uf);
+		
+	}
+
+	// 파일저장메소드
+	private String saveFile(MultipartFile file, String savePath) {
+		File folder = new File(prop.getProperty(savePath));
+		if (!folder.exists()) {
+			folder.mkdirs();
+		}
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		String originFileName = file.getOriginalFilename();
+		String renameFileName = sdf.format(new Date(System.currentTimeMillis())) + "."
+				+ originFileName.substring(originFileName.lastIndexOf(".") + 1);
+		String renamePath = folder + "//" + renameFileName;
+
+		try {
+			file.transferTo(new File(renamePath));
+			logger.info("file save complete");
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return renameFileName;
+	}
+	
+	// 이미지 불러오기
+	@GetMapping("selectImage")
+	@ResponseBody
+	private UploadFile selectImage(@RequestParam("tnum") int tnum) {
+		UploadFile file = talkService.insertSelectImage(tnum);
+		return file;
+	}
+	
+	// 파일 다운로드
+	@GetMapping("/document/fileDownload.do")
+	public void fileDownload(@RequestParam("document_nm") String document_nm, HttpSession session,
+			HttpServletRequest req, HttpServletResponse res, ModelAndView mav) throws Throwable{
+		try {
+			
+			DownloadView fileDown = new DownloadView();
+			fileDown.fileDown(req, res, "C:/STUDY/WorkspaceCollection/hhsgit/hhsweb/src/main/resources/static/uploadfiles" + "/", document_nm, document_nm);
+			logger.info("download!!!");
+		} catch(Exception e) {
+			e.printStackTrace();
+			logger.error(e.toString());
+		}
 	}
 }

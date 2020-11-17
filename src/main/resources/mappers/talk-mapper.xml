@@ -18,22 +18,13 @@
 		order by enrolldate desc
 	</select>
 	
-	<select id="selectTalksList" parameterType="Talk" resultMap="talkMap">
+	<select id="selectTalksList" parameterType="Talk" resultType="Talk">
 		select *
 		from talk
 		where tsnum = #{tsnum}
 		and enrolldate >= (select enrolldate from talkentry where id = #{userId} and tsnum = #{tsnum})
 	</select>
 		
-	<resultMap type="Talk" id="talkMap">
-		<id column="tnum" property="tnum"/>
-		<result column="enrolldate" property="enrollDate"/>
-		<result column="content" property="content"/>
-		<result column="userid" property="userId"/>
-		<result column="tsnum" property="tsnum"/>
-		<result column="status" property="status"/>
-	</resultMap>
-	
 	<insert id="insertTalkSpace">
 		insert into talkspace(enrolldate, participants, ifone)
 		values(now(), #{tmd}, 'Y')
@@ -87,5 +78,16 @@
 		set enrolldate = now()
 		where tsnum = #{tsnum} and id = #{userId}
 	</delete>
+	
+	<insert id="insertUploadFile" parameterType="UploadFile">
+		insert into uploadfile(uploaddate, originname, filerename, tnum)
+		values(now(), #{originName}, #{fileRename}, #{tnum})
+	</insert>
+	
+	<select id="insertSelectImage" resultType="UploadFile">
+		select *
+		from uploadfile
+		where tnum = #{tnum}
+	</select>
 	
 </mapper>

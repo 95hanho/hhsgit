@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.sejong.hhsweb.model.Talk;
 import com.sejong.hhsweb.model.TalkSpace;
+import com.sejong.hhsweb.model.UploadFile;
 
 public interface TalkService {
 
@@ -21,5 +22,9 @@ public interface TalkService {
 	void exitTalkSpace(TalkSpace ts, String userId);
 	// 채팅참여자 추가
 	void updateTalkSpace(TalkSpace ts);
+	// 채팅에 파일업로드
+	void insertUploadFile(UploadFile uf);
+	// 채팅 사진가져오기
+	UploadFile insertSelectImage(int tnum);
 
 }

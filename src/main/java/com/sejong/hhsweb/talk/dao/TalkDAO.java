@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.sejong.hhsweb.model.Talk;
 import com.sejong.hhsweb.model.TalkEntry;
 import com.sejong.hhsweb.model.TalkSpace;
+import com.sejong.hhsweb.model.UploadFile;
 import com.sejong.hhsweb.talk.mapper.TalkMapper;
 
 @Repository("talkDAO")
@@ -96,6 +97,14 @@ public class TalkDAO {
 	// 톡 유저 추가
 	public void updateTalkSpace(TalkSpace ts) {
 		talkmapper.updateTalkSpace(ts);
+	}
+
+	public void insertUploadFile(UploadFile uf) {
+		talkmapper.insertUploadFile(uf);
+	}
+
+	public UploadFile insertSelectImage(int tnum) {
+		return talkmapper.insertSelectImage(tnum);
 	}
 
 }

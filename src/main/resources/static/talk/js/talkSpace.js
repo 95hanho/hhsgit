@@ -5,11 +5,10 @@
  3. 현재 톡방 나가기
  4. 새로운 유저 초대하기
  */
- $(function() {
- 	if(tsnum != ''){ // 처음 화면만 들어올떄는 채팅방생성이 안되었으므로 null체크
+$(function() {
+	if(tsnum != ''){ // 처음 화면만 들어올떄는 채팅방생성이 안되었으므로 null체크
  		selectTalks();
  	}
-	
 	// 초대목록 보여주기, 숨기기
 	$('#inviteshowBtn').click(function(){
 		if($('#inviteshowBtn').val() == '초대목록보기'){
@@ -20,8 +19,62 @@
 			$('#inviteshowBtn').val('초대목록보기');
 		}
 	});
+	// 사진 올리고 저장하기
+	$('#btn-upload').on('click', function(){
+		var filetf = $('#file').val();
+		if(filetf != ''){
+			if(sinTalkYN == 'Y'){ // 새로 만든 채팅이면 채팅입력과 동시에 채팅방 생성
+				$.ajax({
+					url: 'talkmake2',
+					data: {
+						tmd:tmd,
+						content:'파일'
+					},
+					async:false,
+					success:function(data){
+						tsnum=data;
+						$('#hidTs').val(tsnum);
+						sinTalkYN = 'N';
+					}
+				});
+			} else if(sinTalkYN == 'N'){ // 만들어진 채팅이면 톡추가만 해줌
+				$.ajax({
+					url: 'insertTalk',
+					data: {
+						tsnum:tsnum,
+						content:'파일'
+					},
+					async:false,
+					success:function(data){
+					}
+				});
+			}
+			var form = new FormData(document.getElementById('uploadDiv'));
+			$.ajax({
+				url:"filechat",
+				data: form,
+				processData: false,
+				contentType: false,
+				async:false,
+				type: 'POST',
+				success: function (response){
+				}
+			});
+			$('#talktext').val('');
+			
+			//file태그 초기화
+			$('#file').val('');
+			
+			setTimeout(function(){
+				selectTalks();
+				send_message('talkmake:'+tmd);
+				//location.reload();
+			},2500);
+		}
+		
+	});
 });
-// 동기적으로 새로고침해줘야할 톡방 내용들
+
 function selectTalks() {
 	// 채팅목록을 가져옴
 	$.ajax({
@@ -39,14 +92,51 @@ function selectTalks() {
 			
 			for(var key in data){
 				var $div1 = $('<div class="talkline">');
-				if(data[key].userId == userid){
-					var $div2 = $('<div class="mytalk">');
-					$div2.text(data[key].userId+' : '+data[key].content);
+				if(data[key].content == '파일'){
+					$.ajax({
+						url : 'selectImage',
+						data : {
+							tnum:data[key].tnum
+						},
+						async : false,
+						success:function(data2){
+							if(data[key].userId == userid){
+								var $div2 = $('<div class="mytalk">');
+								$div2.text(data[key].userId+' : 파일');
+								var $div3 = $('<div class="mytalk-image">');
+								var $div3_1 = '<div>사진</div>';
+								var $div3_2 = $('<div>');
+								var $img3_3 = $('<img alt="하하" src="uploadfiles/'+ data2.fileRename +'">');
+								$img3_3.attr('onclick','fn_downfile("'+ data2.fileRename +'");');
+								$div3_2.append($img3_3);
+								$div3.append($div3_1).append($div3_2);
+							} else{
+								var $div2 = $('<div class="otherstalk">');
+								$div2.text(data[key].userId+' : 파일');
+								var $div3 = $('<div class="otherstalk-image">');
+								var $div3_1 = '<div>사진</div>';
+								var $div3_2 = $('<div>');
+								var $img3_3 = $('<img alt="하하" src="uploadfiles/'+ data2.fileRename +'">');
+								$img3_3.attr('onclick','fn_downfile("'+ data2.fileRename +'");');
+								$div3_2.append($img3_3);
+								$div3.append($div3_1).append($div3_2);
+							}
+							$div1.append($div2);
+							$div1.append($div3);
+						}
+					});
 				} else{
-					var $div2 = $('<div class="otherstalk">');
-					$div2.text(data[key].userId+' : '+data[key].content);
+					if(data[key].userId == userid){
+						var $div2 = $('<div class="mytalk">');
+						$div2.text(data[key].userId+' : '+data[key].content);
+					} else{
+						var $div2 = $('<div class="otherstalk">');
+						$div2.text(data[key].userId+' : '+data[key].content);
+					}
+					$div1.append($div2);
 				}
-				$div1.append($div2);
+				
+				
 				$('#talks').append($div1);
 				$('#talks').scrollTop($('#talks')[0].scrollHeight);
 			}
@@ -153,4 +243,8 @@ function inviteUser(userId){
 			send_message('talkmake:'+tmd);
 		}
 	});
+}
+
+function fn_downfile(document_nm){
+	location.href = "/document/fileDownload.do?document_nm=" + document_nm;
 }

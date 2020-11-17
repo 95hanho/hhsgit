@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.sejong.hhsweb.model.Talk;
 import com.sejong.hhsweb.model.TalkSpace;
+import com.sejong.hhsweb.model.UploadFile;
 import com.sejong.hhsweb.talk.dao.TalkDAO;
 
 @Service("talkService")
@@ -48,6 +49,16 @@ public class TalkServiceImpl implements TalkService{
 	@Override
 	public void updateTalkSpace(TalkSpace ts) {
 		talkDAO.updateTalkSpace(ts);
+	}
+
+	@Override
+	public void insertUploadFile(UploadFile uf) {
+		talkDAO.insertUploadFile(uf);
+	}
+
+	@Override
+	public UploadFile insertSelectImage(int tnum) {
+		return talkDAO.insertSelectImage(tnum);
 	}
 
 

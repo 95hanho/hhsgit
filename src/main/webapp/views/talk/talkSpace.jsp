@@ -18,19 +18,27 @@
 		<div id="talksDiv"> <!-- 톡제목 및 내용들 -->
 			<div id="talkHeader">${TalkTitle}</div>
 			<div id="talks">
-				<!-- 
+			<!-- 
 				<div id="talkMargin"></div>
 				<div class="talkline">
 					<div class="mytalk">나의아이디 : 채팅내용</div>
+					<div class="mytalk-image">
+						<div>사진 : </div>
+						<div><img alt="하하" src="talk/images/꽃2.png"></div>
+					</div>
 				</div>
 				<div class="talkline">
 					<div class="otherstalk">타인아이디 : 채팅내용</div>
+					<div class="otherstalk-image">
+						<div>사진 : </div>
+						<div><img alt="하하" src="talk/images/꽃2.png"></div>
+					</div>
 				</div>
-				 -->
+			 -->
 			</div>
 		</div>
 		<div id="backDiv" > <!-- 채팅방목록으로 돌아가기 -->
-			<button onclick="location.href='userLogin'">&lt;</button>
+			<button onclick="window.history.back();">&lt;</button>
 		</div>
 		<div id="talkchatDiv"> 
 			<!-- 채팅치는칸 -->
@@ -39,7 +47,9 @@
 			<!-- 초대할 유저목록 보기버튼 -->
 			<input id="inviteshowBtn" type="button" value="초대목록보기">
 			<!-- 채팅방 exit -->
+			<c:if test="${ !empty tsnum }">
 			<button onclick="exitTalk();">채팅방 나가기</button>
+			</c:if>
 			<!-- 초대할 유저목록 -->
 			<div id="inviteListDiv">
 				<div id="inviteHeader">초대목록</div>
@@ -50,6 +60,12 @@
 					</div>
 				</div>
 			</div>
+			<!-- 파일 올리기 -->
+			<form id="uploadDiv" method="POST" enctype="multipart/form-data" action="filechat">
+				<input type="file" id="file" name="file">
+				<input id="hidTs" type="hidden" value="${ tsnum }" name="tsnum">
+				<button type="button" id="btn-upload">전송</button>
+			</form>
 		</div>
 		
 	</section>

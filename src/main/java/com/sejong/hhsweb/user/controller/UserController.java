@@ -39,30 +39,40 @@ public class UserController {
 		return "user/loginMain";
 	}
 	
-	@RequestMapping("userLogin")
-	public String userLogin(Model m, @ModelAttribute User user, HttpSession session) {
-		// 로그인이 아닐 때 talkMain갈때
-		if(user.getUserId() == null) {
-			String userId = ((User)session.getAttribute("loginUser")).getUserId();
-			ArrayList<User> allUserList = userService.AllSelectUser(userId);
-			m.addAttribute("allUserList", allUserList);
-			return "talk/talkMain";
-		}
+	@PostMapping("userLogin")
+	public String userLogin(Model m, @ModelAttribute User user) {
+		// 로그인이 아닐 때 talkMain갈때 ===>>  (redirect 방식으로 다시 talkMain으로 가면 웹소켓 초기화가 안되므로 사용안함)
+//		if(user.getUserId() == null) {
+//			String userId = ((User)session.getAttribute("loginUser")).getUserId();
+//			ArrayList<User> allUserList = userService.AllSelectUser(userId);
+//			m.addAttribute("allUserList", allUserList);
+//			return "talk/talkMain";
+//		}
 		
 		// 로그인 할때
 		User OriginUser = userService.selectUser(user.getUserId());
-		if(passwordEncoder.matches(user.getUserPwd(), OriginUser.getUserPwd())) {
+		if(OriginUser != null && passwordEncoder.matches(user.getUserPwd(), OriginUser.getUserPwd())) {
 			m.addAttribute("loginUser", user);
-			String userId = user.getUserId();
-			ArrayList<User> allUserList = userService.AllSelectUser(userId);
-			m.addAttribute("allUserList", allUserList);
-			logger.info(userId + "login success");
+			return "redirect:loginComplete";
 		} else {
 			logger.info("login fail!!");
 			m.addAttribute("message", "로그인 실패!!");
 			return "user/loginMain";
 		}
-		
+	}
+	
+	// Post방식은 Get방식으로 다시 뷰로 가줘야 새로고침이나 뒤로가기 시 재호출가능
+	@GetMapping("loginComplete")
+	public String loginComplete(Model m, HttpSession session) {
+		String userId;
+		try {
+			userId = ((User) session.getAttribute("loginUser")).getUserId();
+		} catch (Exception e) {
+			return "redirect:/";
+		}
+		ArrayList<User> allUserList = userService.AllSelectUser(userId);
+		m.addAttribute("allUserList", allUserList);
+		logger.info(userId + "login success");
 		return "talk/talkMain";
 	}
 	
@@ -80,8 +90,8 @@ public class UserController {
 		return "redirect:/";
 	}
 	
-	@PostMapping("userInsert")
-	public String userInsert(Model m, @ModelAttribute User user, HttpSession session) {
+	@PostMapping(value = "userInsert", produces="text/plain")
+	public String userInsert(Model m, @ModelAttribute User user) {
 		try {
 			logger.info("userInsert");
 			user.setUserPwd(passwordEncoder.encode(user.getUserPwd()));
@@ -96,8 +106,7 @@ public class UserController {
 			m.addAttribute("message", "회원가입 실패!!");
 			return "user/loginMain";
 		}
-		
-		return "talk/talkMain";
+		return "redirect:loginComplete";
 	}
 	
 	
