@@ -104,9 +104,15 @@ function selectTalks() {
 								var $div2 = $('<div class="mytalk">');
 								$div2.text(data[key].userId+' : 파일');
 								var $div3 = $('<div class="mytalk-image">');
-								var $div3_1 = '<div>사진</div>';
+								var str = data2.fileRename;
+								if(str.slice(-3, str.length) == 'png' || str.slice(-3, str.length) == 'PNG' || str.slice(-3, str.length) == 'jpg' || str.slice(-3, str.length) == 'JPG'){
+									var $div3_1 = '<div>사진</div>';
+									var $img3_3 = $('<img alt="하하" src="uploadfiles/'+ data2.fileRename +'">');
+								} else if(tr.slice(-3, str.length) == 'txt'){
+									var $div3_1 = '<div>메모</div>';
+									var $img3_3 = $('<img alt="하하" src="talk/images/notepad.png">');
+								}
 								var $div3_2 = $('<div>');
-								var $img3_3 = $('<img alt="하하" src="uploadfiles/'+ data2.fileRename +'">');
 								$img3_3.attr('onclick','fn_downfile("'+ data2.fileRename +'");');
 								$div3_2.append($img3_3);
 								$div3.append($div3_1).append($div3_2);
@@ -114,9 +120,15 @@ function selectTalks() {
 								var $div2 = $('<div class="otherstalk">');
 								$div2.text(data[key].userId+' : 파일');
 								var $div3 = $('<div class="otherstalk-image">');
-								var $div3_1 = '<div>사진</div>';
+								var str = data2.fileRename;
+								if(str.slice(-3, str.length) == 'png' || str.slice(-3, str.length) == 'PNG' || str.slice(-3, str.length) == 'jpg' || str.slice(-3, str.length) == 'JPG'){
+									var $div3_1 = '<div>사진</div>';
+									var $img3_3 = $('<img alt="하하" src="uploadfiles/'+ data2.fileRename +'">');
+								} else if(tr.slice(-3, str.length) == 'txt'){
+									var $div3_1 = '<div>메모</div>';
+									var $img3_3 = $('<img alt="하하" src="talk/images/notepad.png">');
+								}
 								var $div3_2 = $('<div>');
-								var $img3_3 = $('<img alt="하하" src="uploadfiles/'+ data2.fileRename +'">');
 								$img3_3.attr('onclick','fn_downfile("'+ data2.fileRename +'");');
 								$div3_2.append($img3_3);
 								$div3.append($div3_1).append($div3_2);
