@@ -10,6 +10,7 @@
 $(function() {
 	talkInfo(); // 채팅창목록소환
 });
+
 // 채팅창 목록소환함수
 function talkInfo() {
 	$.ajax({
@@ -21,7 +22,11 @@ function talkInfo() {
 				var $div = $('<div class="talkSpaces">');
 				var $label = $('<label>');
 				var partyNum = data[key].participants.split(',');
-				$label.text('('+partyNum.length+')'+data[key].participants);
+				if(data[key].ifone == 'Y'){
+					$label.text('1:1채팅:' + data[key].participants);
+				} else if(data[key].ifone == 'N') {
+					$label.text('단톡:' + '(' + partyNum.length + ')' + data[key].participants);
+				}
 				$label.attr('ondblclick', 'talkView(' + data[key].tsnum + ');');
 				var $button = $('<button>');
 				$button.attr('onclick', 'deletets(' + data[key].tsnum + ',"'+ data[key].ifone +'","'+data[key].participants +'");');

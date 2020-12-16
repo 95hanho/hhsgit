@@ -90,11 +90,12 @@ section {
 
 .talkSpaces>label {
 	width: 275px;
-	margin: 0;
-	text-align: left;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	height: 100%;
+    margin: 0;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 100%;
+    white-space: nowrap;
 }
 
 .talkSpaces>button {
@@ -147,6 +148,7 @@ section {
 .mytalk {
 	text-align: right;
 	white-space: break-spaces;
+	overflow-wrap: break-word;
 }
 
 .mytalk-image {
@@ -163,6 +165,7 @@ section {
 .otherstalk {
 	text-align: left;
 	white-space: break-spaces;
+	overflow-wrap: break-word;
 }
 
 .otherstalk-image {

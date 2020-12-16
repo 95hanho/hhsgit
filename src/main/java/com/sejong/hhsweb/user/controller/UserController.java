@@ -13,7 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
@@ -34,13 +34,16 @@ public class UserController {
 	
 	
 	@GetMapping("/")
-	public String loginMain() {
+	public String loginMain(Model m, @RequestParam(value="ms", required = false) String ms) {
 		logger.info("loginMain");
+		if(ms != null) {
+			m.addAttribute("ms", ms);
+		}
 		return "user/loginMain";
 	}
 	
 	@PostMapping("userLogin")
-	public String userLogin(Model m, @ModelAttribute User user) {
+	public String userLogin(Model m, @ModelAttribute User user, HttpSession session) {
 		// 로그인이 아닐 때 talkMain갈때 ===>>  (redirect 방식으로 다시 talkMain으로 가면 웹소켓 초기화가 안되므로 사용안함)
 //		if(user.getUserId() == null) {
 //			String userId = ((User)session.getAttribute("loginUser")).getUserId();

@@ -8,6 +8,10 @@
 $(function() {
 	if(tsnum != ''){ // 처음 화면만 들어올떄는 채팅방생성이 안되었으므로 null체크
  		selectTalks();
+ 		var tHtext = $('#talkHeader').text();
+ 		if(tHtext == ''){
+ 			$('#talkHeader').text('나간채팅방입니다.')
+ 		}
  	}
 	// 초대목록 보여주기, 숨기기
 	$('#inviteshowBtn').click(function(){
@@ -108,7 +112,7 @@ function selectTalks() {
 								if(str.slice(-3, str.length) == 'png' || str.slice(-3, str.length) == 'PNG' || str.slice(-3, str.length) == 'jpg' || str.slice(-3, str.length) == 'JPG'){
 									var $div3_1 = '<div>사진</div>';
 									var $img3_3 = $('<img alt="하하" src="uploadfiles/'+ data2.fileRename +'">');
-								} else if(tr.slice(-3, str.length) == 'txt'){
+								} else if(str.slice(-3, str.length) == 'txt'){
 									var $div3_1 = '<div>메모</div>';
 									var $img3_3 = $('<img alt="하하" src="talk/images/notepad.png">');
 								}
@@ -124,7 +128,7 @@ function selectTalks() {
 								if(str.slice(-3, str.length) == 'png' || str.slice(-3, str.length) == 'PNG' || str.slice(-3, str.length) == 'jpg' || str.slice(-3, str.length) == 'JPG'){
 									var $div3_1 = '<div>사진</div>';
 									var $img3_3 = $('<img alt="하하" src="uploadfiles/'+ data2.fileRename +'">');
-								} else if(tr.slice(-3, str.length) == 'txt'){
+								} else if(str.slice(-3, str.length) == 'txt'){
 									var $div3_1 = '<div>메모</div>';
 									var $img3_3 = $('<img alt="하하" src="talk/images/notepad.png">');
 								}

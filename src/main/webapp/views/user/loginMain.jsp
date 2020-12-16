@@ -32,4 +32,10 @@
 	</div>
 </c:if>
 </body>
+<script>
+	var ms = '${ms}';
+	if(ms != ''){
+		alert('세션이 종료되어 로그인화면으로 돌아갑니다.');
+	}
+</script>
 </html>

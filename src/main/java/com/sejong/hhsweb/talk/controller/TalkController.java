@@ -134,7 +134,9 @@ public class TalkController {
 		TalkSpace ts = new TalkSpace();
 		ts.setTsnum(tsnum);
 		ts.setIfone(ifone);
-		talkService.exitTalkSpace(ts, userId);
+		if(ifone != null) {
+			talkService.exitTalkSpace(ts, userId);
+		}
 
 		ArrayList<User> allUserList = userService.AllSelectUser(userId);
 		m.addAttribute("allUserList", allUserList);
