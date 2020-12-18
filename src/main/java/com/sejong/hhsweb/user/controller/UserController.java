@@ -71,7 +71,6 @@ public class UserController {
 		String userId;
 		try {
 			userId = ((User) session.getAttribute("loginUser")).getUserId();
-			String id = SessionConfig.getSessionidCheck("login_id", userId);
 		} catch (Exception e) {
 			return "redirect:/";
 		}
