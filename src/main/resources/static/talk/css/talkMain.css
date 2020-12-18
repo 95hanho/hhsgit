@@ -90,12 +90,12 @@ section {
 
 .talkSpaces>label {
 	width: 275px;
-    margin: 0;
-    text-align: left;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    height: 100%;
-    white-space: nowrap;
+	margin: 0;
+	text-align: left;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 100%;
+	white-space: nowrap;
 }
 
 .talkSpaces>button {
@@ -140,6 +140,7 @@ section {
 }
 
 .talkline {
+	position: relative;
 	width: 100%;
 	min-height: 30px;
 	border-top: 1px solid;
@@ -149,6 +150,20 @@ section {
 	text-align: right;
 	white-space: break-spaces;
 	overflow-wrap: break-word;
+}
+
+.langs {
+	position: absolute;
+    top: 0px;
+    left: 262.1px;
+    border: 1px solid;
+    width: 60px;
+    height: 20px;
+    background-color: beige;
+    text-align: center;
+    font-size: 13.2px;
+    line-height: 20px;
+    display: none;
 }
 
 .mytalk-image {
@@ -185,14 +200,20 @@ section {
 	height: 50px;
 }
 
-#backDiv>button {
+#backDiv>button:nth-child(1) {
 	position: relative;
-	right: -280px;
-	width: 50px;
-	height: 50px;
-	font-size: 40px;
-	font-weight: 900;
-	line-height: 31.4px;
+    width: 190px;
+    height: 30px;
+}
+
+#backDiv>button:nth-child(2) {
+	position: relative;
+    float: right;
+    width: 50px;
+    height: 50px;
+    font-size: 40px;
+    font-weight: 900;
+    line-height: 31.4px;
 }
 
 #talkchatDiv {

@@ -25,7 +25,7 @@
 					<div class="mytalk-image">
 						<div>사진 : </div>
 						<div><img alt="하하" src="talk/images/꽃2.png"></div>
-					</div>
+					</div>x
 				</div>
 				<div class="talkline">
 					<div class="otherstalk">타인아이디 : 채팅내용</div>
@@ -35,9 +35,23 @@
 					</div>
 				</div>
 			 -->
+			 	<div id="talkMargin"></div>
+			 	<div class="talkline">
+			 		<div class="mytalk">hanho : ㅁㄴㅇㄹㅁㄴㅇ<div class="langs">한국어</div></div>
+			 	</div>
+			 	<div class="talkline">
+			 		<div class="mytalk">hanho : ㅁㄴㅇㄹㅁㄴㅇ<div class="langs">한국어</div></div>
+			 	</div>
+			 	<div class="talkline">
+			 		<div class="mytalk">hanho : ㅁㄴㅇㄹㅁㄴㅇ<div class="langs">한국어</div></div>
+			 	</div>
+			 	<div class="talkline">
+			 		<div class="mytalk">hanho : ㅁㄴㅇㄹㅁㄴㅇ<div class="langs">한국어</div></div>
+			 	</div>
 			</div>
 		</div>
 		<div id="backDiv" > <!-- 채팅방목록으로 돌아가기 -->
+			<button id="transBt" onclick="transBtn();">파파고 번역(한->영, 영->한)</button>
 			<button onclick="window.history.back();">&lt;</button>
 		</div>
 		<div id="talkchatDiv"> 

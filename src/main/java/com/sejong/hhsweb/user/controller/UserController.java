@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
 import com.sejong.hhsweb.model.User;
+import com.sejong.hhsweb.user.SessionDupl.SessionConfig;
 import com.sejong.hhsweb.user.service.UserService;
 
 @Controller
@@ -70,6 +71,7 @@ public class UserController {
 		String userId;
 		try {
 			userId = ((User) session.getAttribute("loginUser")).getUserId();
+			String id = SessionConfig.getSessionidCheck("login_id", userId);
 		} catch (Exception e) {
 			return "redirect:/";
 		}

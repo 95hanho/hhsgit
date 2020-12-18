@@ -7,7 +7,7 @@
  */
 $(function() {
 	if(tsnum != ''){ // 처음 화면만 들어올떄는 채팅방생성이 안되었으므로 null체크
- 		selectTalks();
+ 		selectTalks(1);
  		var tHtext = $('#talkHeader').text();
  		if(tHtext == ''){
  			$('#talkHeader').text('나간채팅방입니다.')
@@ -70,7 +70,7 @@ $(function() {
 			$('#file').val('');
 			
 			setTimeout(function(){
-				selectTalks();
+				selectTalks(1);
 				send_message('talkmake:'+tmd);
 				//location.reload();
 			},2500);
@@ -79,7 +79,7 @@ $(function() {
 	});
 });
 
-function selectTalks() {
+function selectTalks(trans) {
 	// 채팅목록을 가져옴
 	$.ajax({
 		url : 'selectTalks',
@@ -95,7 +95,12 @@ function selectTalks() {
 			$('#talkMargin').css('height', tmheight);
 			
 			for(var key in data){
-				var $div1 = $('<div class="talkline">');
+				var $div1 = $('<div class="talkline '+data[key].tnum+'">');
+				var $div3 = $('<div class="langs '+data[key].tnum+'">');
+				$div3.text('한국어');
+				$div1.attr('onmouseover', 'langover('+data[key].tnum+');');
+				$div1.attr('onmouseout', 'langout('+data[key].tnum+');');
+				$div1.append($div3);
 				if(data[key].content == '파일'){
 					$.ajax({
 						url : 'selectImage',
@@ -142,19 +147,47 @@ function selectTalks() {
 						}
 					});
 				} else{
+					var langs = langsCheck(data[key].content);
+					if(langs == 'ko'){
+						$div3.text('한국어');
+					} else if(langs == 'en'){
+						$div3.text('영어');
+					} else {
+						$div3.text('알수없음');
+					}
 					if(data[key].userId == userid){
-						var $div2 = $('<div class="mytalk">');
+						var $div2 = $('<div class="mytalk '+ data[key].tnum +'">');
 						$div2.text(data[key].userId+' : '+data[key].content);
+						
 					} else{
 						var $div2 = $('<div class="otherstalk">');
 						$div2.text(data[key].userId+' : '+data[key].content);
 					}
+					if(trans == 2 && (langs == 'ko' || langs == 'en')){
+						if(langs == 'ko'){
+							$div3.text('영어');
+						} else if(langs == 'en'){
+							$div3.text('한국어');
+						}
+						$.ajax({
+							url: 'papagotrans',
+							dataType: 'json',
+							data: {
+								content:data[key].content,
+								langs:langs
+							},
+							async: false,
+							success: function(re){
+								$div2.text(data[key].userId+' : '+re.message.result.translatedText);
+							}
+						});
+					}
 					$div1.append($div2);
 				}
 				
-				
 				$('#talks').append($div1);
 				$('#talks').scrollTop($('#talks')[0].scrollHeight);
+				
 			}
 			
 		}
@@ -199,6 +232,47 @@ function selectTalks() {
 		}	
 	});
 }
+
+function transBtn()	{
+	if($('#transBt').text() == '파파고 번역(한->영, 영->한)'){
+		selectTalks(2);
+		$('#transBt').text('번역중(취소 시 클릭)');
+	} else {
+		selectTalks(1);
+		$('#transBt').text('파파고 번역(한->영, 영->한)');
+	}
+	
+}
+
+function langover(a) {
+	var ls = '.langs.'+a;
+	$(ls).show();
+	
+}
+
+function langout(a) {
+	var ls = '.langs.'+a;
+	$(ls).hide();
+}	
+
+// 언어체크
+function langsCheck(text){
+	var result2 = '';
+	$.ajax({
+		url: 'langsCheck',
+		dataType: 'json',
+		data:{
+			text:text
+		},
+		async:false,
+		success: function(data){
+			result2 = data.langCode;
+		}
+	});
+	if(result2 != ''){
+		return result2;
+	}
+}
 // 채팅입력엔터키 입력 시, 쉬프트와 같이 누르면 줄바꿈
 function enterkey(){
 	if(window.event.keyCode == 13){
@@ -216,12 +290,13 @@ function enterkey(){
 					success:function(data){
 						tsnum=data;
 						$('#talktext').val('');
-						selectTalks();
+						selectTalks(1);
 						send_message('talkmake:'+tmd);
 						sinTalkYN = 'N';
 					}
 				});
 			} else if(sinTalkYN == 'N'){ // 만들어진 채팅이면 톡추가만 해줌
+				$('#transBt').text('파파고 번역(한->영, 영->한)');
 				$.ajax({
 					url: 'insertTalk',
 					data: {
@@ -231,7 +306,7 @@ function enterkey(){
 					async:false,
 					success:function(data){
 						$('#talktext').val('');
-						selectTalks();
+						selectTalks(1);
 						send_message('talkmake:'+tmd);
 					}
 				});
@@ -255,7 +330,7 @@ function inviteUser(userId){
 		},
 		async:false,
 		success:function(data){
-			selectTalks();
+			selectTalks(1);
 			send_message('talkmake:'+tmd);
 		}
 	});

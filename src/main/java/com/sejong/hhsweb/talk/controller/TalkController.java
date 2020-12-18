@@ -32,6 +32,8 @@ import com.sejong.hhsweb.model.TalkSpace;
 import com.sejong.hhsweb.model.UploadFile;
 import com.sejong.hhsweb.model.User;
 import com.sejong.hhsweb.talk.download.DownloadView;
+import com.sejong.hhsweb.talk.papago.ApiExamDetectLangs;
+import com.sejong.hhsweb.talk.papago.ApiExamTranslateNmt;
 import com.sejong.hhsweb.talk.service.TalkService;
 import com.sejong.hhsweb.user.service.UserService;
 
@@ -39,18 +41,10 @@ import com.sejong.hhsweb.user.service.UserService;
 public class TalkController {
 
 	/*
-	 1.채팅방목록 가져오기
-	 2.채팅방 들어가기
-	 3.채팅창 목록에서 채팅방나가기
-	 4.채팅방에서 채팅나가기
-	 5.채팅방생성 전에 채팅화면으로 가줌
-	 6.새 채팅방에서 채팅칠시 채팅방 생성
-	 7.채팅 추가
-	 8.채팅불러오기
-	 9.채팅참여목록 가져오기
-	 10.초대가능유저목록 가져오기
-	 11.초대가능목록에서 초대하기
-	*/
+	 * 1.채팅방목록 가져오기 2.채팅방 들어가기 3.채팅창 목록에서 채팅방나가기 4.채팅방에서 채팅나가기 5.채팅방생성 전에 채팅화면으로 가줌
+	 * 6.새 채팅방에서 채팅칠시 채팅방 생성 7.채팅 추가 8.채팅불러오기 9.채팅참여목록 가져오기 10.초대가능유저목록 가져오기
+	 * 11.초대가능목록에서 초대하기
+	 */
 	static final Logger logger = LoggerFactory.getLogger(TalkController.class);
 	private Properties prop = new Properties();
 
@@ -59,7 +53,7 @@ public class TalkController {
 
 	@Autowired
 	private UserService userService;
-	
+
 	public TalkController() {
 		String fileName = TalkController.class.getResource("/path.properties").getPath();
 		try {
@@ -77,12 +71,12 @@ public class TalkController {
 	public ArrayList<TalkSpace> talkInfo(HttpSession session) {
 		logger.info("talkSpaces INFO");
 
-		String userId = ((User)session.getAttribute("loginUser")).getUserId();
+		String userId = ((User) session.getAttribute("loginUser")).getUserId();
 		ArrayList<TalkSpace> talkList = talkService.selectTalkList(userId);
 
 		return talkList;
 	}
-	
+
 	// 채팅방 들어가기
 	@GetMapping("talkView")
 	public String talkView(Model m, @RequestParam("tsnum") int tsnum, HttpSession session) {
@@ -115,7 +109,7 @@ public class TalkController {
 		talkService.exitTalkSpace(ts, userId);
 
 	}
-	
+
 	// 채팅방에서 채팅나가기
 	@GetMapping("exitTalk")
 	public String exitTalk(Model m, @RequestParam("tsnum") int tsnum, HttpSession session) {
@@ -134,7 +128,7 @@ public class TalkController {
 		TalkSpace ts = new TalkSpace();
 		ts.setTsnum(tsnum);
 		ts.setIfone(ifone);
-		if(ifone != null) {
+		if (ifone != null) {
 			talkService.exitTalkSpace(ts, userId);
 		}
 
@@ -144,7 +138,7 @@ public class TalkController {
 		return "talk/talkMain";
 
 	}
-	
+
 	// 채팅방생성 전에 채팅화면으로 가줌
 	@GetMapping("talkmake")
 	public String talkView(Model m, @RequestParam("tmd") String tmd, HttpSession session) {
@@ -190,7 +184,7 @@ public class TalkController {
 
 		return tsnum + "";
 	}
-	
+
 	// 채팅 추가
 	@GetMapping("insertTalk")
 	@ResponseBody
@@ -237,7 +231,6 @@ public class TalkController {
 		return resultTS;
 	}
 
-	
 	// 초대가능유저목록 가져오기
 	@GetMapping("selectIUlist")
 	@ResponseBody
@@ -288,28 +281,26 @@ public class TalkController {
 		talkService.insertTalk(t);
 
 	}
-	
-	
+
 	// ------------------기본형태는 완성 ------------------------
-	
+
 	// 채팅에 사진업로드
-	@PostMapping(value= "filechat", produces="text/plain")
+	@PostMapping(value = "filechat", produces = "text/plain")
 	@ResponseBody
-	public void fileChatting(MultipartHttpServletRequest multi, @RequestParam("tsnum") int tsnum,
-			HttpSession session) {
+	public void fileChatting(MultipartHttpServletRequest multi, @RequestParam("tsnum") int tsnum, HttpSession session) {
 		logger.info("file save");
-		
-		String userId = ((User)session.getAttribute("loginUser")).getUserId();
+
+		String userId = ((User) session.getAttribute("loginUser")).getUserId();
 //		// "파일"이라는 톡을 남김 그리고 tnum을 가져옴
 		Talk t = new Talk();
 //		t.setContent("파일");
 		t.setTsnum(tsnum);
 		t.setUserId(userId);
 //		talkService.insertTalk(t);
-		
+
 		ArrayList<Talk> TalkList = talkService.selectTalksList(t);
-		int tnum = TalkList.get(TalkList.size()-1).getTnum();
-		//	파일을 저장하고, uploadfile테이블에 파일정보 저장
+		int tnum = TalkList.get(TalkList.size() - 1).getTnum();
+		// 파일을 저장하고, uploadfile테이블에 파일정보 저장
 		MultipartFile uploadFile = multi.getFile("file");
 		String renameFileName = saveFile(uploadFile, "uploadPath");
 		UploadFile uf = new UploadFile();
@@ -317,7 +308,7 @@ public class TalkController {
 		uf.setFileRename(renameFileName);
 		uf.setTnum(tnum);
 		talkService.insertUploadFile(uf);
-		
+
 	}
 
 	// 파일저장메소드
@@ -344,7 +335,7 @@ public class TalkController {
 
 		return renameFileName;
 	}
-	
+
 	// 이미지 불러오기
 	@GetMapping("selectImage")
 	@ResponseBody
@@ -352,19 +343,38 @@ public class TalkController {
 		UploadFile file = talkService.insertSelectImage(tnum);
 		return file;
 	}
-	
+
 	// 파일 다운로드
 	@GetMapping("/document/fileDownload.do")
 	public void fileDownload(@RequestParam("document_nm") String document_nm, HttpSession session,
-			HttpServletRequest req, HttpServletResponse res, ModelAndView mav) throws Throwable{
+			HttpServletRequest req, HttpServletResponse res, ModelAndView mav) throws Throwable {
 		try {
-			
+
 			DownloadView fileDown = new DownloadView();
-			fileDown.fileDown(req, res, "C:/STUDY/WorkspaceCollection/hhsgit/hhsweb/src/main/resources/static/uploadfiles" + "/", document_nm, document_nm);
+			fileDown.fileDown(req, res,
+					"C:/STUDY/WorkspaceCollection/hhsgit/hhsweb/src/main/resources/static/uploadfiles" + "/",
+					document_nm, document_nm);
 			logger.info("download!!!");
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
+	}
+
+	@GetMapping("langsCheck")
+	@ResponseBody
+	public String langsCheck(@RequestParam("text") String text) {
+		ApiExamDetectLangs adl = new ApiExamDetectLangs();
+		String result = adl.detectLangs(text);
+		
+		return result;
+	}
+
+	@GetMapping("papagotrans")
+	@ResponseBody
+	public String papagotrans(@RequestParam("content") String content, @RequestParam("langs") String langs) {
+		ApiExamTranslateNmt atn = new ApiExamTranslateNmt();
+		String result = atn.transLangs(content, langs);
+		return result;
 	}
 }

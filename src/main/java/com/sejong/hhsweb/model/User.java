@@ -4,11 +4,11 @@ import org.apache.ibatis.type.Alias;
 
 @Alias("User")
 public class User {
-	
+
 	private String userId;
 	private String userPwd;
 	private String userEmail;
-	
+
 	public User() {
 	}
 
@@ -47,5 +47,4 @@ public class User {
 	public String toString() {
 		return "User [userId=" + userId + ", userPwd=" + userPwd + ", userEmail=" + userEmail + "]";
 	}
-
 }

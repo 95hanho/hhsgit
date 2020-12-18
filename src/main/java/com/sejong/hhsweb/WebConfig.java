@@ -10,7 +10,7 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(new CertificationInterceptor())
-		.excludePathPatterns("/", "/userLogin", "/talk/**", "/uploadfiles/**", "/user/**", "/websocket/**");
+		.excludePathPatterns("/", "/userLogin", "/logininfoView", "/userInsert", "/talk/**", "/uploadfiles/**", "/user/**", "/websocket/**");
 //		.excludePathPatterns("/talk/**", "/uploadfiles/**", "/user/**", "/websocket/**");
 	}
 }
