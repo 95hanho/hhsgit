@@ -28,5 +28,10 @@ public class UserServiceImpl implements UserService {
 	public ArrayList<User> AllSelectUser(String userId) {
 		return userDAO.AllSelectUser(userId);
 	}
+
+	@Override
+	public void updateUserConnect(String userId) {
+		userDAO.updateUserConnect(userId);
+	}
 	
 }

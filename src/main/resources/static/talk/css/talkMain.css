@@ -2,7 +2,7 @@
 
 section {
 	min-width: 700px;
-	min-height: 600px;
+	min-height: 650px
 }
 
 #talkDiv {
@@ -39,7 +39,7 @@ section {
 	position: relative;
 	top: -212.7px;
 	right: -332.4px;
-	width: 100px;
+	width: 200px;
 	height: 220px;
 	border: 1px solid;
 	overflow-y: scroll;
@@ -52,14 +52,30 @@ section {
 	font-size: 15.5px;
 }
 
-.userline {
+.userInfo {
 	width: 100%;
 	height: 30px;
-	text-align: center;
 	border-bottom: 1px solid;
 }
 
-.userline:hover {
+.userline {
+	float: left;
+	width: 65%;
+	height: 30px;
+	text-align: center;
+}
+
+.userConnect {
+	float: left;
+	width: 35%;
+	height: 30px;
+	line-height: 24.1px;
+	text-align: center;
+	font-size: 11.8px;
+	color: crimson;
+}
+
+.userInfo:hover {
 	background: skyblue;
 	cursor: pointer;
 }
@@ -154,27 +170,27 @@ section {
 
 .langs {
 	position: absolute;
-    top: 0px;
-    left: 262.1px;
-    border: 1px solid;
-    width: 60px;
-    height: 20px;
-    background-color: beige;
-    text-align: center;
-    font-size: 13.2px;
-    line-height: 20px;
-    display: none;
+	top: 0px;
+	left: 262.1px;
+	border: 1px solid;
+	width: 60px;
+	height: 20px;
+	background-color: beige;
+	text-align: center;
+	font-size: 13.2px;
+	line-height: 20px;
+	display: none;
 }
 
 .mytalk-image {
 	text-align: right;
-	cursor: pointer;
 }
 
 .mytalk-image img {
 	border: 1px solid;
 	width: 100px;
 	height: 100px;
+	cursor: pointer;
 }
 
 .otherstalk {
@@ -202,18 +218,19 @@ section {
 
 #backDiv>button:nth-child(1) {
 	position: relative;
-    width: 190px;
-    height: 30px;
+	width: 190px;
+	height: 30px;
+	display: none;
 }
 
 #backDiv>button:nth-child(2) {
 	position: relative;
-    float: right;
-    width: 50px;
-    height: 50px;
-    font-size: 40px;
-    font-weight: 900;
-    line-height: 31.4px;
+	float: right;
+	width: 50px;
+	height: 50px;
+	font-size: 40px;
+	font-weight: 900;
+	line-height: 31.4px;
 }
 
 #talkchatDiv {
@@ -236,22 +253,23 @@ section {
 }
 
 #inviteshowBtn {
-	display: none;
+	display: none;	
 }
 
 #talkchatDiv>button {
 	float: right;
+	display: none;
 }
 
 #inviteListDiv {
-	display: none;
 	position: relative;
-	top: -252.7px;
-	right: 107.6px;
-	width: 100px;
-	height: 220px;
-	border: 1px solid;
-	overflow-y: scroll;
+    top: -252.7px;
+    right: 224px;
+    width: 220px;
+    height: 220px;
+    border: 1px solid;
+    overflow-y: scroll;
+    visibility: hidden;
 }
 
 #inviteHeader {
@@ -268,24 +286,35 @@ section {
 	border-bottom: 1px solid;
 }
 
-.inviteline>label {
-	text-align: center;
-	margin: 0;
-	width: 70px;
-	height: 100%;
-	line-height: 30px;
+.inviteline>div:nth-child(1) {
+	float: left;
+    text-align: center;
+    width: 118px;
+    height: 100%;
+    line-height: 30px;
+}
+
+.inviteline>div:nth-child(2) {
+	float: left;
+    text-align: center;
+    width: 70px;
+    height: 100%;
+    line-height: 24.1px;
+    text-align: center;
+    font-size: 11.8px;
+    color: crimson;
 }
 
 .inviteline>button {
-	width: 25px;
+	width: 27px;
 	height: 30px;
-	float: right;
+	float: left;
 	font-size: 20px;
 }
 
 #uploadDiv {
 	position: relative;
-	top: -80px;
+	top: -310px;
 	left: 340px;
 	border: 1px solid;
 	width: 180px;

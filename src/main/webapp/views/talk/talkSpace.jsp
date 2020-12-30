@@ -9,7 +9,6 @@
 <link rel="stylesheet" href="talk/css/talkMain.css">
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script type="text/javascript" src="talk/js/talkSpace.js"></script>
-<script type="text/javascript" src="websocket/js/websocket.js"></script>
 </head>
 <body>
 	<c:import url="../user/loginMain.jsp"></c:import>
@@ -35,6 +34,7 @@
 					</div>
 				</div>
 			 -->
+			 <!-- 
 			 	<div id="talkMargin"></div>
 			 	<div class="talkline">
 			 		<div class="mytalk">hanho : ㅁㄴㅇㄹㅁㄴㅇ<div class="langs">한국어</div></div>
@@ -48,11 +48,12 @@
 			 	<div class="talkline">
 			 		<div class="mytalk">hanho : ㅁㄴㅇㄹㅁㄴㅇ<div class="langs">한국어</div></div>
 			 	</div>
+			  -->
 			</div>
 		</div>
 		<div id="backDiv" > <!-- 채팅방목록으로 돌아가기 -->
 			<button id="transBt" onclick="transBtn();">파파고 번역(한->영, 영->한)</button>
-			<button onclick="window.history.back();">&lt;</button>
+			<button onclick="location.href='loginComplete'">&lt;</button>
 		</div>
 		<div id="talkchatDiv"> 
 			<!-- 채팅치는칸 -->
@@ -61,9 +62,7 @@
 			<!-- 초대할 유저목록 보기버튼 -->
 			<input id="inviteshowBtn" type="button" value="초대목록보기">
 			<!-- 채팅방 exit -->
-			<c:if test="${ !empty tsnum }">
 			<button onclick="exitTalk();">채팅방 나가기</button>
-			</c:if>
 			<!-- 초대할 유저목록 -->
 			<div id="inviteListDiv">
 				<div id="inviteHeader">초대목록</div>
@@ -93,5 +92,6 @@
 	var userid = '${ loginUser.userId }'; // 접속유저아이디
 	var tmd = '${ TalkTitle }'; // 톡 참여자목록
 	var webmessage = '${ webmessage }'; // 웹소켓메시지
+	var ifone = 'N'; // 단체톡인지 단체톡은 N
 </script>
 </html>

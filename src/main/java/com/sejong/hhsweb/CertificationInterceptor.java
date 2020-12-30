@@ -12,7 +12,9 @@ import com.sejong.hhsweb.model.User;
 
 @Component
 public class CertificationInterceptor extends HandlerInterceptorAdapter {
-
+	
+	// 서버의 요청 시 컨트롤러로 가기전에 실행시켜줌
+	// 섹션에 로그인한 유저정보가 있다면 섹션시간을 연장시켜주고 아니라면 메인화면에 섹션만료 알람(ms)를 보냄
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
@@ -20,11 +22,12 @@ public class CertificationInterceptor extends HandlerInterceptorAdapter {
 		User loginVo = (User) session.getAttribute("loginUser");
 
 		if (loginVo != null) {
-			session.setMaxInactiveInterval(60 * 30);
+			session.setMaxInactiveInterval(60 * 30); // 30분(60 * 30)
+//			session.setMaxInactiveInterval(5);
 			return true;
 		} else {
-			response.sendRedirect("/?ms=sessionvalidate");
-			return false; 
+			response.sendRedirect("/?ms=loginout:");
+			return false;
 		}
 	}
 

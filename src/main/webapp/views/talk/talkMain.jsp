@@ -9,7 +9,6 @@
 <link rel="stylesheet" href="talk/css/talkMain.css">
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script type="text/javascript" src="talk/js/talkMain.js"></script>
-<script type="text/javascript" src="websocket/js/websocket.js"></script>
 </head>
 <body>
 	<c:import url="../user/loginMain.jsp"></c:import>
@@ -28,9 +27,10 @@
 			<div id="userListDiv"> <!-- 초대가능유저목록 -->
 				<div id="userListHeader">접속유저목록</div>
 				<div id="userList">
-					<c:forEach var="aul" items="${ allUserList }">
-					<div class="userline" onclick="guestAdd('${ aul.userId}');">${ aul.userId }</div>
-					</c:forEach>
+					<div class="userInfo">
+						<div class="userline" onclick="guestAdd();"></div>
+						<div class="userConnect">●</div>
+					</div>
 				</div>
 			</div>
 		</div>

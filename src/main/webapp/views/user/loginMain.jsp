@@ -6,7 +6,9 @@
 <head>
 <meta charset="UTF-8">
 <title>로그인 메인</title>
-	<link rel="stylesheet" href="user/css/loginMain.css">
+<link rel="stylesheet" href="user/css/loginMain.css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="websocket/js/websocket.js"></script>
 </head>
 <body>
 <c:if test="${ !empty requestScope.message }">
@@ -33,9 +35,10 @@
 </c:if>
 </body>
 <script>
-	var ms = '${ms}';
-	if(ms != ''){
-		alert('세션이 종료되어 로그인화면으로 돌아갑니다.');
-	}
+var webmessage = '${ webmessage }'; // 웹소켓메시지
+var ms = '${ms}'; // 섹션 종료 메시지
+if(ms != ''){ // 있다면 알람을 표시
+	alert('세션이 종료되어 로그인화면으로 돌아갑니다.');
+}
 </script>
 </html>

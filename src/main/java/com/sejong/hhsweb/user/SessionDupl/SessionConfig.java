@@ -1,19 +1,14 @@
 package com.sejong.hhsweb.user.SessionDupl;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import javax.servlet.annotation.WebListener;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 @WebListener
 public class SessionConfig implements HttpSessionListener {
 
-private static final Map<String, HttpSession> sessions = new ConcurrentHashMap<>();
-	
-	//중복로그인 지우기(잘안됨)
+//private static final Map<String, HttpSession> sessions = new ConcurrentHashMap<>();
+//	
+//	//중복로그인 지우기(잘안됨)
 //	public synchronized static String getSessionidCheck(String type, String compareId){
 //		String result = "";
 //		for( String key : sessions.keySet() ){

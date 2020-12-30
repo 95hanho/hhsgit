@@ -26,4 +26,8 @@ public class UserDAO {
 		return userMapper.AllSelectUser(userId);
 	}
 
+	public void updateUserConnect(String userId) {
+		userMapper.updateUserConnect(userId);
+	}
+
 }

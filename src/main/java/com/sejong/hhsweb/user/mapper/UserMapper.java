@@ -13,4 +13,6 @@ public interface UserMapper {
 	User selectUser(String userId);
 
 	ArrayList<User> AllSelectUser(String userId);
+
+	void updateUserConnect(String userId);
 }

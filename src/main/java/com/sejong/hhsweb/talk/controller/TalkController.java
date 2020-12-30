@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
@@ -132,8 +133,6 @@ public class TalkController {
 			talkService.exitTalkSpace(ts, userId);
 		}
 
-		ArrayList<User> allUserList = userService.AllSelectUser(userId);
-		m.addAttribute("allUserList", allUserList);
 		m.addAttribute("webmessage", "talkmake:" + tmd);
 		return "talk/talkMain";
 
@@ -145,9 +144,18 @@ public class TalkController {
 		logger.info("new Talk view");
 		User user = (User) session.getAttribute("loginUser");
 		String userId = user.getUserId();
-
-		tmd = userId + "," + tmd;
 		String[] tmdList = tmd.split(",");
+		
+		boolean userDupl = false;
+		for(String id : tmdList) {
+			if(id.equals(userId)) {
+				userDupl = true;
+			}
+		}
+		if(!userDupl) {
+			tmd = userId + "," + tmd;
+		}
+		
 		if (tmdList.length == 2) {
 			ArrayList<TalkSpace> talkList = talkService.selectTalkList(userId);
 			for (TalkSpace ts : talkList) {
@@ -229,29 +237,6 @@ public class TalkController {
 			}
 		}
 		return resultTS;
-	}
-
-	// 초대가능유저목록 가져오기
-	@GetMapping("selectIUlist")
-	@ResponseBody
-	public ArrayList<User> selectIUlist(HttpSession session, @RequestParam("tmd") String tmd) {
-		String userId = ((User) session.getAttribute("loginUser")).getUserId();
-		ArrayList<User> allUserList = userService.AllSelectUser(userId);
-		String[] inUserList = tmd.split(",");
-		ArrayList<User> inviteUserList = new ArrayList<User>();
-
-		for (int i = 0; i < allUserList.size(); i++) {
-			boolean dupl = true;
-			for (String inUser : inUserList) {
-				if (inUser.equals(allUserList.get(i).getUserId())) {
-					dupl = false;
-				}
-			}
-			if (dupl) {
-				inviteUserList.add(allUserList.get(i));
-			}
-		}
-		return inviteUserList;
 	}
 
 	// 초대가능목록에서 초대하기
@@ -349,7 +334,6 @@ public class TalkController {
 	public void fileDownload(@RequestParam("document_nm") String document_nm, HttpSession session,
 			HttpServletRequest req, HttpServletResponse res, ModelAndView mav) throws Throwable {
 		try {
-
 			DownloadView fileDown = new DownloadView();
 			fileDown.fileDown(req, res,
 					"C:/STUDY/WorkspaceCollection/hhsgit/hhsweb/src/main/resources/static/uploadfiles" + "/",
@@ -361,15 +345,17 @@ public class TalkController {
 		}
 	}
 
+	// text를 받아서 언어의 종류를 파악하여 반환
 	@GetMapping("langsCheck")
 	@ResponseBody
 	public String langsCheck(@RequestParam("text") String text) {
 		ApiExamDetectLangs adl = new ApiExamDetectLangs();
 		String result = adl.detectLangs(text);
-		
+
 		return result;
 	}
-
+	
+	// langs가 한국어면 content의 내용을 영어로, 영어면 한국어로 바꾸어 반환
 	@GetMapping("papagotrans")
 	@ResponseBody
 	public String papagotrans(@RequestParam("content") String content, @RequestParam("langs") String langs) {
@@ -377,4 +363,107 @@ public class TalkController {
 		String result = atn.transLangs(content, langs);
 		return result;
 	}
+
+	// 접속한 회원 목록
+	@GetMapping("connectUser")
+	@ResponseBody
+	public ArrayList<User> connectUser(@RequestParam("userArr") String userArr, HttpSession session) {
+		String userId = ((User) session.getAttribute("loginUser")).getUserId();
+		ArrayList<User> allUserList = userService.AllSelectUser(userId);
+		String[] userInfo = userArr.split(", ");
+
+		// 해당 회원을 제외한 회원들 중에서
+		for (User u : allUserList) {
+			u.setConnect("f");
+			u.setUserConnect(connectTimes(u.getUserConnect())); // 로그아웃시간
+			
+			// 접속한 회원과
+			for (String user : userInfo) {
+				// 일치하는 회원은 connect가 't' 
+				if (user.equals(u.getUserId())) {
+					u.setConnect("t");
+				}
+			}
+		}
+		
+		return allUserList;
+	}
+
+	// 초대가능유저목록 가져오기
+	@GetMapping("selectIUlist")
+	@ResponseBody
+	public ArrayList<User> selectIUlist(@RequestParam("userArr") String userArr, HttpSession session,
+			@RequestParam("tmd") String tmd) {
+		String userId = ((User) session.getAttribute("loginUser")).getUserId();
+		ArrayList<User> allUserList = userService.AllSelectUser(userId);
+		String[] inUserList = tmd.split(",");
+		String[] userInfo = userArr.split(", ");
+		ArrayList<User> inviteUserList = new ArrayList<User>();
+
+		for (int i = 0; i < allUserList.size(); i++) {
+			// 해당 회원을 제외한 회원 중에서
+			boolean dupl = true;
+			for (String inUser : inUserList) {
+				// 톡방에 있는 회원을 제외
+				if (inUser.equals(allUserList.get(i).getUserId())) {
+					dupl = false;
+				}
+			}
+			if (dupl) {
+				inviteUserList.add(allUserList.get(i));
+			}
+		}
+
+		// 톡방에 있는 회원을 제외한 회원 중
+		for (User u : inviteUserList) {
+			u.setConnect("f");
+			u.setUserConnect(connectTimes(u.getUserConnect())); // 로그아웃시간
+			
+			
+			for (String user : userInfo) {
+				if (user.equals(u.getUserId())) {
+					// 접속한 회원은 't'
+					u.setConnect("t");
+				}
+			}
+		}
+
+		return inviteUserList;
+	}
+	
+	// '2020-12-28 10:44:47식'으로 돼있는 문자를 Date객체로 바꾸어 현재시각에서 얼마나 지났는지 반환
+	public String connectTimes(String strTimes) {
+		String result = null;
+		
+		int year = Integer.parseInt(strTimes.substring(0, 4));
+		int month = Integer.parseInt(strTimes.substring(5, 7)) - 1;
+		int dayOfMonth = Integer.parseInt(strTimes.substring(8, 10));
+		int hourOfDay = Integer.parseInt(strTimes.substring(11, 13));
+		int minute = Integer.parseInt(strTimes.substring(14, 16));
+		int second = Integer.parseInt(strTimes.substring(17, 19));
+		GregorianCalendar g = new GregorianCalendar(year, month, dayOfMonth, hourOfDay, minute, second);
+		Date now = new Date();
+		Date d = new Date(g.getTimeInMillis());
+		int nowSecond = (int) (now.getTime() * 0.001);
+		int dSecond = (int) (d.getTime() * 0.001);
+		int mili = nowSecond - dSecond;
+		if (mili < 60) {
+			result = mili + "초 전";
+		} else if (60 <= mili && mili < 3600) {
+			mili = mili / 60;
+			result = mili + "분 전";
+		} else if (3600 <= mili && mili < (3600 * 24)) {
+			mili = mili / 3600;
+			result = mili + "시간 전";
+		} else if ((3600 * 24) <= mili && mili < (3600 * 24 * 365)) {
+			mili = mili / (3600 * 24);
+			result = mili + "일 전";
+		} else if ((3600 * 24 * 365) <= mili) {
+			mili = mili / (3600 * 24 * 365);
+			result = mili + "년 전";
+		}
+		
+		return result;
+	}
+	
 }

@@ -11,5 +11,7 @@ public interface UserService {
 	User selectUser(String userId);
 
 	ArrayList<User> AllSelectUser(String userId);
+
+	void updateUserConnect(String userId);
 	
 }

@@ -1,26 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sejong.hhsweb.user.mapper.UserMapper">
+	<!-- 회원가입정보 입력 -->
 	<insert id="userInsert" parameterType="User">
 		insert into user(userid, userpwd, email)
 		values(#{userId}, #{userPwd}, #{userEmail})
 	</insert>
 	
+	<!-- 로그인 시 회원정보 조회 -->
 	<select id="selectUser" resultMap="userMap">
 		select userid, userpwd, email
 		from user
 		where userid = #{userid} and status = 'Y'
 	</select>
 	
+	<!-- 나를 제외한 회원정보 조회(로그인회원목록에 사용) -->
 	<select id="AllSelectUser" resultMap="userMap">
-		select userid, userpwd, email
+		select userid, userpwd, email, userconnect
 		from user
 		where userid != #{userId} and status = 'Y'
 	</select>
 	
+	<!-- 회원접속기록을 최신 업데이트시킴 -->
+	<update id="updateUserConnect">
+		update user
+		set userconnect = now()
+		where userid = #{userId} and status = 'Y'
+	</update>
+	
+	<!-- User객체의 resultMap -->
 	<resultMap type="User" id="userMap">
 		<id column="userid" property="userId"/>
 		<result column="userpwd" property="userPwd"/>
 		<result column="email" property="userEmail"/>
+		<result column="userconnect" property="userConnect"/>
 	</resultMap>
 </mapper>
