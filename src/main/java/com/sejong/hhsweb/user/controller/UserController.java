@@ -84,7 +84,7 @@ public class UserController {
 
 	// Post방식은 Get방식으로 다시 뷰로 가줘야 새로고침이나 뒤로가기 시 재호출가능
 	@GetMapping("loginComplete")
-	public String loginComplete(Model m, HttpSession session) {
+	public String loginComplete(Model m, HttpSession session, SessionStatus status) {
 		String userId;
 		try {
 			userId = ((User) session.getAttribute("loginUser")).getUserId();
@@ -92,7 +92,7 @@ public class UserController {
 			return "redirect:/";
 		}
 		// 로그인 시 섹션이 유지되어 있는지 확인시켜주고 아닐 시 로그인정보를 업데이트해주는 스레드를 실행
-		si.sessionTimeOutUpdate(session);
+		si.sessionTimeOutUpdate(session, status);
 		logger.info(userId + " : login success");
 		// webmessage에 loginout을 보내서 접속회원 접속정보 초기화
 		m.addAttribute("webmessage", "loginout:");

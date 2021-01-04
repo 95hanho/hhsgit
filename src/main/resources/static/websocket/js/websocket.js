@@ -9,21 +9,15 @@ function send_message(data) {
     websocket = new WebSocket(wsUri);
 
     websocket.onopen = function(evt) {
-
         onOpen(evt, data);
-
     };
 
     websocket.onmessage = function(evt) {
-    	
-    		onMessage(evt);
-
+    	onMessage(evt);
     };
 
     websocket.onerror = function(evt) {
-
         onError(evt);
-
     };
 }
 

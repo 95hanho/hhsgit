@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -14,6 +15,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.sejong.hhsweb.model.User;
+import com.sejong.hhsweb.talk.service.TalkService;
 
 @Component
 public class WebSocketHadler extends TextWebSocketHandler {
@@ -21,13 +23,13 @@ public class WebSocketHadler extends TextWebSocketHandler {
 	static final Logger logger = LoggerFactory.getLogger(WebSocketHadler.class);
 	
 	// 로그인 한 전체
-	List<WebSocketSession> sessions = new ArrayList<WebSocketSession>();
+	public static List<WebSocketSession> sessions = new ArrayList<WebSocketSession>();
 	// 1대1
-	Map<String, WebSocketSession> userSessionsMap = new HashMap<String, WebSocketSession>();
+	public static Map<String, WebSocketSession> userSessionsMap = new HashMap<String, WebSocketSession>();
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-		Thread.sleep(500); // 아다리 맞추기
+		Thread.sleep(250); // 아다리 맞추기
 		String userId = getUserId(session);
 		if(userId != null) {
 			sessions.add(session); // 전체사용 List에 담기
@@ -45,7 +47,7 @@ public class WebSocketHadler extends TextWebSocketHandler {
 		String userId = getUserId(session);
 		String receiveM = message.getPayload(); // 메시지 가져오기
 		logger.debug("received message : " + receiveM);
-		Thread.sleep(500); // 아다리 맞추기
+		Thread.sleep(250); // 아다리 맞추기
 		String[] divideM = receiveM.split(":");
 		
 		// 어떤 회원이 로그인, 로그아웃 시 접속해 있는 다른 회원의 접속 기록 목록을 초기화함

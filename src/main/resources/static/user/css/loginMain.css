@@ -20,7 +20,7 @@ header {
 	height: 30px;
 }
 
-#loginDiv input, label {
+#loginDiv input, #loginDiv label {
 	display: block;
 	margin-left: 20px;
 	float: left;
@@ -44,7 +44,7 @@ header {
 	height: 30px;
 }
 
-#loginInfoDiv input, label {
+#loginInfoDiv input, #loginInfoDiv label {
 	display: block;
 	margin-left: 20px;
 	float: left;

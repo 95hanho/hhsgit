@@ -61,5 +61,15 @@ public class TalkServiceImpl implements TalkService{
 		return talkDAO.insertSelectImage(tnum);
 	}
 
+	@Override
+	public int updateTalkRead(int tsnum, String userId) {
+		return talkDAO.updateTalkRead(tsnum, userId);
+	}
+
+	@Override
+	public void deleteTalkRead(int tsnum, String userId) {
+		talkDAO.deleteTalkRead(tsnum, userId);
+	}
+
 
 }

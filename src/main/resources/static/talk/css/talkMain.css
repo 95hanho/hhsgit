@@ -99,9 +99,10 @@ section {
 /* 채팅방 리스트 */
 .talkSpaces {
 	width: 100%;
-	height: 50px;
+	min-height: 50px;
 	border-bottom: 1px solid;
 	line-height: 50px;
+	overflow: hidden;
 }
 
 .talkSpaces>label {
@@ -110,17 +111,46 @@ section {
 	text-align: left;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	height: 100%;
+	height: 50px;
 	white-space: nowrap;
+	float: left;
 }
 
 .talkSpaces>button {
 	display: block;
-	float: right;
+	float: left;
 	font-size: 30px;
 	font-weight: 900;
 	width: 50px;
 	height: 50px;
+	cursor: pointer;
+}
+
+.lastTalk {
+	width: 270px;
+	height: 30px;
+	float: left;
+	line-height: 30px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	text-align: left;
+	overflow: hidden;
+	margin-left: 10px;
+}
+
+.noReadNum {
+	width: 40px;
+	height: 40px;
+	float: left;
+	line-height: 34.3px;
+	background: red;
+	border-radius: 50px;
+	text-align: center;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	font-size: 28px;
+	font-weight: bolder;
+	color: white;
 }
 
 .talkSpaces:hover {
@@ -159,13 +189,28 @@ section {
 	position: relative;
 	width: 100%;
 	min-height: 30px;
-	border-top: 1px solid;
+	overflow: hidden;
+	margin-bottom: 5px;
 }
 
 .mytalk {
+	height: 100%;
+	max-width: 250px;
 	text-align: right;
 	white-space: break-spaces;
 	overflow-wrap: break-word;
+	float: right;
+	border: 1px solid blue;
+	border-radius: 10px;
+	background: aliceblue;
+}
+
+.mytalkLabel {
+	display: block;
+	font-size: 11px;
+	width: 20px;
+	color: darkcyan;
+	float: right;
 }
 
 .langs {
@@ -184,6 +229,9 @@ section {
 
 .mytalk-image {
 	text-align: right;
+	width: 100%;
+	float: right;
+	cursor: pointer;
 }
 
 .mytalk-image img {
@@ -194,20 +242,44 @@ section {
 }
 
 .otherstalk {
+	height: 100%;
+	max-width: 250px;
 	text-align: left;
 	white-space: break-spaces;
 	overflow-wrap: break-word;
+	float: left;
+	border: 1px solid dimgrey;
+	border-radius: 10px;
+	background: seashell;
+}
+
+.otherLabel {
+	display: block;
+	font-size: 11px;
+	width: 20px;
+	color: darkcyan;
+	float: left;
 }
 
 .otherstalk-image {
 	text-align: left;
 	cursor: pointer;
+	width: 100%;
+	float: left;
 }
 
 .otherstalk-image img {
 	border: 1px solid;
 	width: 100px;
 	height: 100px;
+}
+
+.entertalk {
+	height: 100%;
+    width: 100%;
+    text-align: center;
+    font-size: 13.5px;
+    border-bottom: 3px dashed lightslategray;
 }
 
 #backDiv {
@@ -253,7 +325,7 @@ section {
 }
 
 #inviteshowBtn {
-	display: none;	
+	display: none;
 }
 
 #talkchatDiv>button {
@@ -263,13 +335,13 @@ section {
 
 #inviteListDiv {
 	position: relative;
-    top: -252.7px;
-    right: 224px;
-    width: 220px;
-    height: 220px;
-    border: 1px solid;
-    overflow-y: scroll;
-    visibility: hidden;
+	top: -252.7px;
+	right: 224px;
+	width: 220px;
+	height: 220px;
+	border: 1px solid;
+	overflow-y: scroll;
+	visibility: hidden;
 }
 
 #inviteHeader {
@@ -288,21 +360,21 @@ section {
 
 .inviteline>div:nth-child(1) {
 	float: left;
-    text-align: center;
-    width: 118px;
-    height: 100%;
-    line-height: 30px;
+	text-align: center;
+	width: 118px;
+	height: 100%;
+	line-height: 30px;
 }
 
 .inviteline>div:nth-child(2) {
 	float: left;
-    text-align: center;
-    width: 70px;
-    height: 100%;
-    line-height: 24.1px;
-    text-align: center;
-    font-size: 11.8px;
-    color: crimson;
+	text-align: center;
+	width: 70px;
+	height: 100%;
+	line-height: 24.1px;
+	text-align: center;
+	font-size: 11.8px;
+	color: crimson;
 }
 
 .inviteline>button {

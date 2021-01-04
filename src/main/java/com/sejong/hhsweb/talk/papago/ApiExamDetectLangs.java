@@ -32,6 +32,8 @@ public class ApiExamDetectLangs {
 		requestHeaders.put("X-Naver-Client-Id", clientId);
 		requestHeaders.put("X-Naver-Client-Secret", clientSecret);
 
+		
+		//
 		String responseBody = post(apiURL, requestHeaders, query);
 		
 		return responseBody;

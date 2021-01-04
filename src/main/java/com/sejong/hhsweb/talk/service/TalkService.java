@@ -26,5 +26,9 @@ public interface TalkService {
 	void insertUploadFile(UploadFile uf);
 	// 채팅 사진가져오기
 	UploadFile insertSelectImage(int tnum);
+	// 톡접속 시 톡읽음 정보를 업데이트
+	int updateTalkRead(int tsnum, String userId);
+	// 톡방 나갈 시 톡에 있는 해당회원 읽은 기록 지움
+	void deleteTalkRead(int tsnum, String userId);
 
 }

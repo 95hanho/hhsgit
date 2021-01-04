@@ -15,6 +15,8 @@ public interface TalkMapper {
 	ArrayList<TalkSpace> selectTalkList(String userId);
 
 	ArrayList<Talk> selectTalksList(Talk t);
+	
+	ArrayList<Talk> allSelectTalksList(int tsnum);
 
 	void insertTalkSpace(String tmd);
 
@@ -40,7 +42,7 @@ public interface TalkMapper {
 
 	UploadFile insertSelectImage(int tnum);
 
-	
+	int updateTalkRead(int tnum, String talkRead);
 
 
 }

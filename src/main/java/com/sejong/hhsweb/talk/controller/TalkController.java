@@ -73,15 +73,51 @@ public class TalkController {
 		logger.info("talkSpaces INFO");
 
 		String userId = ((User) session.getAttribute("loginUser")).getUserId();
-		ArrayList<TalkSpace> talkList = talkService.selectTalkList(userId);
+		ArrayList<TalkSpace> tsList = talkService.selectTalkList(userId);
+		
+		// Talk안의 마지막 톡을 미리보기위해 넣어줌
+		for(TalkSpace ts : tsList) {
+			int tsnum = ts.getTsnum();
+			Talk t = new Talk();
+			t.setUserId(userId);
+			t.setTsnum(tsnum);
+			ArrayList<Talk> talkList = talkService.selectTalksList(t);
+			Talk last = talkList.get(talkList.size()-1);
+			String lastTalk = "└ " + last.getUserId() + ":" + last.getContent();
+			ts.setLastTalk(lastTalk);
+			
+			int noReadNum = 0;
+			for(Talk talk : talkList) {
+				if(talk.getContent().equals("님이 나갔습니다.") || talk.getContent().equals("님이 들어왔습니다.")) {
+					continue;
+				}
+				String talkRead = talk.getTalkRead();
+				if(talkRead == null) {
+					noReadNum++;
+				} else {
+					String[] tr = talkRead.split(",");
+					boolean noRead = true;
+					for(String s : tr) {
+						if(s.equals(userId)) {
+							noRead = false;
+						}
+					}
+					if(noRead) {
+						noReadNum++;
+					}
+				}
+			}
+			ts.setNoReadNum(noReadNum);
+		}
 
-		return talkList;
+		return tsList;
 	}
 
 	// 채팅방 들어가기
 	@GetMapping("talkView")
 	public String talkView(Model m, @RequestParam("tsnum") int tsnum, HttpSession session) {
 		logger.info("old Talk ENTER");
+		String webmessage = null;
 
 		User user = (User) session.getAttribute("loginUser");
 		String userId = user.getUserId();
@@ -103,6 +139,8 @@ public class TalkController {
 	public void deletets(Model m, @RequestParam("tsnum") int tsnum, @RequestParam("ifone") String ifone,
 			HttpSession session) {
 		String userId = ((User) session.getAttribute("loginUser")).getUserId();
+		
+		talkService.deleteTalkRead(tsnum, userId);
 
 		TalkSpace ts = new TalkSpace();
 		ts.setTsnum(tsnum);
@@ -117,6 +155,8 @@ public class TalkController {
 		String userId = ((User) session.getAttribute("loginUser")).getUserId();
 		String ifone = null;
 		String tmd = null;
+		
+		talkService.deleteTalkRead(tsnum, userId);
 
 		ArrayList<TalkSpace> tsList = talkService.selectTalkList(userId);
 		for (TalkSpace talkSpace : tsList) {
@@ -183,12 +223,14 @@ public class TalkController {
 		ts.setParticipants(tmd);
 		ts.setTsnum(tsnum);
 		talkService.insertTalkEntry(ts);
-		// 엔트리 작성 구간////////////////////////////
-		Talk talk = new Talk();
-		talk.setContent(content);
-		talk.setUserId(((User) session.getAttribute("loginUser")).getUserId());
-		talk.setTsnum(tsnum);
-		talkService.insertTalk(talk);
+		// 톡작성 구간////////////////////////////
+		if(!content.equals("파일")) { // 파일은 톡방만 만듬 여기서 파일종류를 확인할 수 가 없음
+			Talk talk = new Talk();
+			talk.setContent(content);
+			talk.setUserId(((User) session.getAttribute("loginUser")).getUserId());
+			talk.setTsnum(tsnum);
+			talkService.insertTalk(talk);
+		}
 
 		return tsnum + "";
 	}
@@ -205,7 +247,6 @@ public class TalkController {
 		talk.setUserId(((User) session.getAttribute("loginUser")).getUserId());
 		talk.setTsnum(tsnum);
 		talkService.insertTalk(talk);
-
 	}
 
 	// 채팅불러오기
@@ -214,11 +255,34 @@ public class TalkController {
 	public ArrayList<Talk> selectTalks(@RequestParam("tsnum") int tsnum, HttpSession session) {
 		logger.info("Talk content INFO");
 		String userId = ((User) session.getAttribute("loginUser")).getUserId();
-
+		
+		TalkSpace mainTs = null;
+		ArrayList<TalkSpace> tsList = talkService.selectTalkList(userId);
+		for(TalkSpace ts : tsList) {
+			if(tsnum == ts.getTsnum()) {
+				mainTs = ts;
+			}
+		}
+		
+		int result = talkService.updateTalkRead(tsnum, userId);
+		
 		Talk t = new Talk();
 		t.setUserId(userId);
 		t.setTsnum(tsnum);
 		ArrayList<Talk> TalkList = talkService.selectTalksList(t);
+		if(result > 0) {
+			TalkList.get(0).setSendBoolean("YES");
+		}
+		for(Talk talk : TalkList) {
+			if(talk.getContent().equals("님이 나갔습니다.") || talk.getContent().equals("님이 들어왔습니다.")) {
+				talk.setTalkRead(""+0);
+				continue;
+			}
+			int mainNum = mainTs.getParticipants().split(",").length;
+			int readNum = talk.getTalkRead().split(",").length;
+			int extraNum = mainNum - readNum;
+			talk.setTalkRead(""+extraNum);
+		}
 
 		return TalkList;
 	}
@@ -276,24 +340,32 @@ public class TalkController {
 		logger.info("file save");
 
 		String userId = ((User) session.getAttribute("loginUser")).getUserId();
+
+		// 파일을 저장하고, uploadfile테이블에 파일정보 저장
+		MultipartFile uploadFile = multi.getFile("file");
+		
+		String renameFileName = saveFile(uploadFile, "uploadPath");
+		
 //		// "파일"이라는 톡을 남김 그리고 tnum을 가져옴
 		Talk t = new Talk();
-//		t.setContent("파일");
+		String fileKind = renameFileName.substring(15);
+		if(fileKind.equals("png") || fileKind.equals("PNG") || fileKind.equals("jpg") || fileKind.equals("JPG") || fileKind.equals("jpeg")) {
+			t.setContent("사진");
+		} else if(fileKind.equals("txt")) {
+			t.setContent("텍스트");
+		}
 		t.setTsnum(tsnum);
 		t.setUserId(userId);
-//		talkService.insertTalk(t);
+		talkService.insertTalk(t);
 
 		ArrayList<Talk> TalkList = talkService.selectTalksList(t);
 		int tnum = TalkList.get(TalkList.size() - 1).getTnum();
-		// 파일을 저장하고, uploadfile테이블에 파일정보 저장
-		MultipartFile uploadFile = multi.getFile("file");
-		String renameFileName = saveFile(uploadFile, "uploadPath");
+		
 		UploadFile uf = new UploadFile();
 		uf.setOriginName(uploadFile.getOriginalFilename());
 		uf.setFileRename(renameFileName);
 		uf.setTnum(tnum);
 		talkService.insertUploadFile(uf);
-
 	}
 
 	// 파일저장메소드
@@ -444,9 +516,7 @@ public class TalkController {
 		GregorianCalendar g = new GregorianCalendar(year, month, dayOfMonth, hourOfDay, minute, second);
 		Date now = new Date();
 		Date d = new Date(g.getTimeInMillis());
-		int nowSecond = (int) (now.getTime() * 0.001);
-		int dSecond = (int) (d.getTime() * 0.001);
-		int mili = nowSecond - dSecond;
+		int mili = (int)((now.getTime() - d.getTime()) * 0.001);
 		if (mili < 60) {
 			result = mili + "초 전";
 		} else if (60 <= mili && mili < 3600) {

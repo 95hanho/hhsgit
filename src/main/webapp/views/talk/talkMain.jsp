@@ -16,9 +16,11 @@
 	<br>
 	<section>
 		<div id="talkDiv">	<!-- 참여 채팅방 목록 -->
-			<div class="talkSpaces" ondblclick="">&nbsp;채팅방참여자들
-				<label></label>
+			<div class="talkSpaces" ondblclick="">
+				<label>asdf</label>
 				<button>X</button>
+				<div class="lastTalk">└ asdf:sasdfasfdsafasdfsfsafsdaad</div>
+				<div class="noReadNum">1</div>
 			</div>
 		</div>
 		

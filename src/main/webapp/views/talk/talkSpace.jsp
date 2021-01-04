@@ -34,10 +34,17 @@
 					</div>
 				</div>
 			 -->
-			 <!-- 
+			 
 			 	<div id="talkMargin"></div>
 			 	<div class="talkline">
-			 		<div class="mytalk">hanho : ㅁㄴㅇㄹㅁㄴㅇ<div class="langs">한국어</div></div>
+			 		<div class="mytalk">hanho : ㅁㄴㅇㄹㅁㄴㅇ</div>
+			 		<label class="mytalkLabel">10</label>
+			 		<div class="langs">한국어</div>
+			 	</div>
+			 	<div class="talkline">
+			 		<div class="otherstalk">other : ㅁㄴㅇㄹㅁㄴㅇ</div>
+			 		<label class="otherLabel">10</label>
+			 		<div class="langs">한국어</div>
 			 	</div>
 			 	<div class="talkline">
 			 		<div class="mytalk">hanho : ㅁㄴㅇㄹㅁㄴㅇ<div class="langs">한국어</div></div>
@@ -45,10 +52,7 @@
 			 	<div class="talkline">
 			 		<div class="mytalk">hanho : ㅁㄴㅇㄹㅁㄴㅇ<div class="langs">한국어</div></div>
 			 	</div>
-			 	<div class="talkline">
-			 		<div class="mytalk">hanho : ㅁㄴㅇㄹㅁㄴㅇ<div class="langs">한국어</div></div>
-			 	</div>
-			  -->
+			 
 			</div>
 		</div>
 		<div id="backDiv" > <!-- 채팅방목록으로 돌아가기 -->

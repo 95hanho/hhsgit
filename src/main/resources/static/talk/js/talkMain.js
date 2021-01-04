@@ -20,6 +20,7 @@ function talkInfo() {
 			$('#talkDiv').html('');
 			for (var key in data) {
 				var $div = $('<div class="talkSpaces">');
+				$div.attr('ondblclick', 'talkView(' + data[key].tsnum + ');');
 				var $label = $('<label>');
 				var partyNum = data[key].participants.split(',');
 				// 1:1채팅
@@ -30,13 +31,29 @@ function talkInfo() {
 					$label.text('단톡:' + '(' + partyNum.length + ')' + data[key].participants);
 				}
 				// 더블클릭 시 채팅방 이동
-				$label.attr('ondblclick', 'talkView(' + data[key].tsnum + ');');
+				
 				var $button = $('<button>');
 				// 'X'버튼 클릭 시 채팅방 나가기
 				$button.attr('onclick', 'deletets(' + data[key].tsnum + ',"'+ data[key].ifone +'","'+data[key].participants +'");');
 				$button.text('X');
+				// 미리보기 내용
+				var $div2 = $('<div class="lastTalk">');
+				$div2.text(data[key].lastTalk);
+				// 미리보기도 톡방에 들어갈 수 있게 설정
+				$div2.attr('ondblclick', 'talkView(' + data[key].tsnum + ');');
+				
+				var $div3 = $('<div class="noReadNum">');
+				if(data[key].noReadNum == 0){
+					$div3.css('background','none');
+				} else {
+					$div3.text(data[key].noReadNum);
+				}
+				$div3.attr('ondblclick', 'talkView(' + data[key].tsnum + ');');
+				
 				$div.append($label);
 				$div.append($button);
+				$div.append($div2);
+				$div.append($div3);
 				$('#talkDiv').append($div);
 			}
 		}
@@ -57,10 +74,12 @@ function deletets(tsnum, ifone, tmd){
 		}
 	});
 }
+
 // 더블클릭 후 톡방으로 들어감(기존있던 채팅방)
 function talkView(tsnum){
 	location.href="talkView?tsnum=" + tsnum;
 }
+
 // 새로운 채팅방을 생성하면서 톡방화면으로 들어감(채팅방 생성은x)
 function talkmake(){
 	var tmd = $('#talkmakeDiv').text();
@@ -70,6 +89,7 @@ function talkmake(){
 		location.href="talkmake?tmd="+tmd;
 	}
 }
+
 // 채팅방 초대할 사람 추가 - 동일 인원이 추가되지 않게 중복 확인을 해준다.
 function guestAdd(userId){
 	var dupltest = true;

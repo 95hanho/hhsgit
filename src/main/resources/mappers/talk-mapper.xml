@@ -24,6 +24,12 @@
 		where tsnum = #{tsnum}
 		and enrolldate >= (select enrolldate from talkentry where id = #{userId} and tsnum = #{tsnum})
 	</select>
+	
+	<select id="allSelectTalksList" resultType="Talk">
+		select *
+		from talk
+		where tsnum = #{tsnum}
+	</select>
 		
 	<insert id="insertTalkSpace">
 		insert into talkspace(enrolldate, participants, ifone)
@@ -89,5 +95,11 @@
 		from uploadfile
 		where tnum = #{tnum}
 	</select>
+	
+	<update id="updateTalkRead">
+		update talk
+		set talkread = #{talkRead}
+		where tnum = #{tnum}
+	</update>
 	
 </mapper>

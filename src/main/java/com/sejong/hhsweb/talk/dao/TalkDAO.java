@@ -107,4 +107,47 @@ public class TalkDAO {
 		return talkmapper.insertSelectImage(tnum);
 	}
 
+	public int updateTalkRead(int tsnum, String userId) {
+		int result = 0;
+		
+		ArrayList<Talk> talkList = talkmapper.allSelectTalksList(tsnum);
+		for(Talk talk : talkList) {
+			boolean alReadyRead = true;
+			String talkread = talk.getTalkRead();
+			if(talkread == null) {
+				result += talkmapper.updateTalkRead(talk.getTnum(), userId);
+			} else {
+				String[] talkReadUser = talk.getTalkRead().split(",");
+				for(String user : talkReadUser) {
+					if(user.equals(userId)) {
+						alReadyRead = false;
+					}
+				}
+				if(alReadyRead) {
+					result += talkmapper.updateTalkRead(talk.getTnum(), talk.getTalkRead() + "," + userId);
+				}
+			}
+		}
+		
+		return result;
+	}
+
+	public void deleteTalkRead(int tsnum, String userId) {
+		ArrayList<Talk> talkList = talkmapper.allSelectTalksList(tsnum);
+		for(Talk talk : talkList) {
+			String talkread = talk.getTalkRead();
+			String newTalkRead = "";
+			if(talkread != null) {
+				String[] talkReadUser = talk.getTalkRead().split(",");
+				for(String user : talkReadUser) {
+					if(user.equals(userId)) {
+						continue;
+					}
+					newTalkRead = newTalkRead + user + ",";
+				}
+				talkmapper.updateTalkRead(talk.getTnum(), newTalkRead.substring(0, newTalkRead.length() - 1));
+			}
+		}
+	}
+
 }
