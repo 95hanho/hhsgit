@@ -21,21 +21,20 @@ function talkInfo() {
 			for (var key in data) {
 				var $div = $('<div class="talkSpaces">');
 				$div.attr('ondblclick', 'talkView(' + data[key].tsnum + ');');
+				
 				var $label = $('<label>');
 				var partyNum = data[key].participants.split(',');
-				// 1:1채팅
-				if(data[key].ifone == 'Y'){
+				if(data[key].ifone == 'Y'){ // 1:1채팅
 					$label.text('1:1채팅:' + data[key].participants);
-				// 단체톡이면 인원수도 표시
-				} else if(data[key].ifone == 'N') {
+				} else if(data[key].ifone == 'N') { // 단체톡이면 인원수도 표시
 					$label.text('단톡:' + '(' + partyNum.length + ')' + data[key].participants);
 				}
-				// 더블클릭 시 채팅방 이동
 				
 				var $button = $('<button>');
 				// 'X'버튼 클릭 시 채팅방 나가기
-				$button.attr('onclick', 'deletets(' + data[key].tsnum + ',"'+ data[key].ifone +'","'+data[key].participants +'");');
 				$button.text('X');
+				$button.attr('onclick', 'deletets(' + data[key].tsnum + ',"'+ data[key].ifone +'","'+data[key].participants +'");');
+				
 				// 미리보기 내용
 				var $div2 = $('<div class="lastTalk">');
 				$div2.text(data[key].lastTalk);
@@ -48,6 +47,7 @@ function talkInfo() {
 				} else {
 					$div3.text(data[key].noReadNum);
 				}
+				// 안읽은 톡 갯수 표시 영역도 톡방 들어갈수 있게 설정
 				$div3.attr('ondblclick', 'talkView(' + data[key].tsnum + ');');
 				
 				$div.append($label);
@@ -135,10 +135,12 @@ function userInfo(userArr){
 			$('#userList').html('');
 			for(var key in data){
 				var $div1 = $('<div class="userInfo">');
+				
 				var $div2 = $('<div class="userline">');
 				$div2.text(data[key].userId);
 				// 클릭 시 초대목록에 추가
 				$div2.attr('onclick', 'guestAdd("'+data[key].userId+'")');
+				
 				var $div3 = $('<div class="userConnect">');
 				// 접속 정보
 				if(data[key].connect == 't'){ // 회원접속 중 일시
@@ -148,6 +150,7 @@ function userInfo(userArr){
 					// 로그아웃한 기준으로 경과시간
 					$div3.text(data[key].userConnect);
 				}
+				
 				$div1.append($div2);
 				$div1.append($div3);
 				$('#userList').append($div1);

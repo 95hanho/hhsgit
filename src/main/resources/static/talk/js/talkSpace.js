@@ -10,7 +10,7 @@ $(function() {
 		if(sinTalkYN == 'N'){ // 만들어진 톡이면 버튼들 활성화
 			$('#inviteshowBtn').show(); // 초대목록보기버튼
 			$('#talkchatDiv>button').show(); // 톡방 나가기버튼
-			$('#backDiv>button:nth-child(1)').show(); // 파파고 번역버튼
+			$('#transBt').show(); // 파파고 번역버튼
 		}
  		selectTalks(1); // 톡목록을 가져옴
  		// 나간 채팅방이면 톡방 인원 조회가 되지않아 나간채팅방으로 표시
@@ -87,139 +87,112 @@ function selectTalks(trans) {
 			$('#talks').html('');
 			var $div = $('<div id="talkMargin">');
 			$('#talks').append($div);
-			// 채팅의 갯수만큼 마진을 없애줘서 아래부터 채팅이 채워질 수 있게 해줌
-			//var tmheight = 340 - data.length * 31.1;
+			// 일단 채팅의 갯수만큼 마진을 없애줘서 아래부터 채팅이 채워질 수 있게 해줌
 			var tmheight = 340 - data.length * 5;
 			
+			// 톡방에 회원이 들어와서 읽은 기록을 업데이트할 경우 톡방의 타회원들에게 톡방을 새로고침하게 메시지를 보냄
 			if(data[0].sendBoolean != null){
 				setTimeout(function(){
 					send_message('talkmake:'+tmd); // 톡방 인원에게 웹소켓메시지
 				},1000);
 			}
+			
 			for(var key in data){
 				var $div1 = $('<div class="talkline '+data[key].tnum+'">');
 				$div1.attr('onmouseover', 'langover('+data[key].tnum+');'); // 톡에 마우스 올리면 무슨 언어인지
 				$div1.attr('onmouseout', 'langout('+data[key].tnum+');'); // 톡에 마우스 내리면 사라짐
-				if(data[key].content == '사진' || data[key].content == '텍스트') { // 톡내용이 파일일 시
-					$.ajax({
-						url : 'selectImage',
-						data : {
-							tnum:data[key].tnum
-						},
-						async : false,
-						success:function(data2){
-							// 해당회원 톡내용 일 떄
-							if(data[key].userId == userid){
-								var $div2 = $('<div class="mytalk">');
-								$div2.text(data[key].userId+' : '+data[key].content);
-								var $label = $('<label class="mytalkLabel">');
-								if(data[key].talkRead != '0'){
-									$label.text(data[key].talkRead);
-								}
-								var $div3Img = $('<div class="mytalk-image">');
+				$('#talks').append($div1);
+				
+				var $div2 = $('<div>');
+				$div2.text(data[key].userId+' : '+data[key].content);
+				$div1.append($div2);
+				
+				var $divImg = $('<div>');
+				
+				// 출입정보를 나타내는 채팅일 시
+				if((data[key].content == '님이 나갔습니다.') || (data[key].content == '님이 들어왔습니다.')) {
+					$div2.addClass('entertalk');
+				} else { // 출입 정보가 아닌 채팅일 시
+					var $label = $('<label>');
+					if(data[key].talkRead != '0'){
+						$label.text(data[key].talkRead);
+					}
+					$div1.append($label);
+					
+					// 톡내용이 파일일 시
+					if(data[key].content == '사진' || data[key].content == '텍스트') {
+						$.ajax({
+							url : 'selectImage',
+							data : {
+								tnum:data[key].tnum
+							},
+							async : false,
+							success:function(data2){
 								var str = data2.fileRename;
+								var $img = $('<img>');
+								$img.attr('alt','하하')
+								$img.attr('onclick','fn_downfile("'+ str +'");'); // 사진클릭 시 다운로드
+								var $divDown = $('<div>');
 								// 사진
 								if(str.slice(-3, str.length) == 'png' || str.slice(-3, str.length) == 'PNG' || str.slice(-3, str.length) == 'jpg' || str.slice(-3, str.length) == 'JPG' || str.slice(-4, str.length) == 'jpeg'){
-									var $img3_3 = $('<img alt="하하" src="uploadfiles/'+ data2.fileRename +'">');
+									$img.attr('src','uploadfiles/'+ str);
 								// 텍스트
 								} else if(str.slice(-3, str.length) == 'txt'){
-									var $img3_3 = $('<img alt="하하" src="talk/images/notepad.png">');
+									$img.attr('src','talk/images/notepad.png');
 								}
-								var $div3_2 = $('<div>');
-								$img3_3.attr('onclick','fn_downfile("'+ data2.fileRename +'");'); // 사진클릭 시 다운로드
-								$div3_2.append($img3_3);
-								$div3Img.append($div3_2);
-							// 타회원 톡내용 일 때
-							} else{
-								var $div2 = $('<div class="otherstalk">');
-								$div2.text(data[key].userId+' : '+data[key].content);
-								var $label = $('<label class="otherLabel">');
-								if(data[key].talkRead != '0'){
-									$label.text(data[key].talkRead);
-								}
-								var $div3Img = $('<div class="otherstalk-image">');
-								var str = data2.fileRename;
-								// 사진
-								if(str.slice(-3, str.length) == 'png' || str.slice(-3, str.length) == 'PNG' || str.slice(-3, str.length) == 'jpg' || str.slice(-3, str.length) == 'JPG'){
-									var $img3_3 = $('<img alt="하하" src="uploadfiles/'+ data2.fileRename +'">');
-								// 텍스트
-								} else if(str.slice(-3, str.length) == 'txt'){
-									var $img3_3 = $('<img alt="하하" src="talk/images/notepad.png">');
-								}
-								var $div3_2 = $('<div>');
-								$img3_3.attr('onclick','fn_downfile("'+ data2.fileRename +'");'); // 사진클릭 시 다운로드
-								$div3_2.append($img3_3);
-								$div3Img.append($div3_2);
-							}
-							$div1.append($div2);
-							$div1.append($label);
-							$div1.append($div3Img);
-						}
-					});
-				} else{ // 톡내용이 파일이 아닐 시
-					if((data[key].content == '님이 나갔습니다.') || (data[key].content == '님이 들어왔습니다.')) {
-						var $div2 = $('<div class="entertalk">');
-						$div2.text(data[key].userId+' '+data[key].content);
-						$div1.append($div2);
-					// 해당 회원 톡일 시
-					} else if(data[key].userId == userid){
-						var $div2 = $('<div class="mytalk '+ data[key].tnum +'">');
-						$div2.text(data[key].userId+' : '+data[key].content);
-						var $label = $('<label class="mytalkLabel">');
-						if(data[key].talkRead != '0'){
-							$label.text(data[key].talkRead);
-						}
-						$div1.append($div2);
-						$div1.append($label);
-					// 타 회원 톡일 시
-					} else{
-						var $div2 = $('<div class="otherstalk">');
-						$div2.text(data[key].userId+' : '+data[key].content);
-						var $label = $('<label class="otherLabel">');
-						if(data[key].talkRead != '0'){
-							$label.text(data[key].talkRead);
-						}
-						$div1.append($div2);
-						$div1.append($label);
-					}
-					var langs = langsCheck(data[key].content); // 언어종류를 가져옴
-					var $div3 = $('<div class="langs '+data[key].tnum+'">'); // 언어 정보를 알려줌 div
-					
-					if(langs == 'ko'){ // 한국어 시
-						$div3.text('한국어');
-					} else if(langs == 'en'){ // 영어 시
-						$div3.text('영어'); 
-					} else { // 기타
-						$div3.text('알수없음');
-					}
-					// trans가 '2'면 한국어와 영어를 파파고 번역한 문장으로 변경
-					if(trans == 2 && (langs == 'ko' || langs == 'en')){
-						if(langs == 'ko'){
-							$div3.text('영어');
-						} else if(langs == 'en'){
-							$div3.text('한국어');
-						}
-						// 언어종류와 내용을 보내서 반환 후 표시
-						$.ajax({
-							url: 'papagotrans',
-							dataType: 'json',
-							data: {
-								content:data[key].content,
-								langs:langs
-							},
-							async: false,
-							success: function(re){
-								$div2.text(data[key].userId+' : '+re.message.result.translatedText);
+								$divDown.append($img);
+								$divImg.append($divDown);
+								$div1.append($divImg);
 							}
 						});
+					} else { // 톡내용이 파일아닐 시
+						var langs = langsCheck(data[key].content); // 언어종류를 가져옴
+						var $divLangs = $('<div class="langs '+data[key].tnum+'">'); // 언어 정보를 알려줌 div
+						
+						if(langs == 'ko'){ // 한국어 시
+							$divLangs.text('한국어');
+						} else if(langs == 'en'){ // 영어 시
+							$divLangs.text('영어'); 
+						} else { // 기타
+							$divLangs.text('알수없음');
+						}
+						$div1.append($divLangs);
+						
+						// trans가 '2'면 한국어와 영어를 파파고 번역한 문장으로 변경
+						if(trans == 2 && (langs == 'ko' || langs == 'en')){
+							if(langs == 'ko'){
+								$divLangs.text('영어');
+							} else if(langs == 'en'){
+								$divLangs.text('한국어');
+							}
+							// 언어종류와 내용을 보내서 반환 후 표시
+							$.ajax({
+								url: 'papagotrans',
+								dataType: 'json',
+								data: {
+									content:data[key].content,
+									langs:langs
+								},
+								async: false,
+								success: function(re){
+									$div2.text(data[key].userId+' : '+re.message.result.translatedText);
+								}
+							});
+						}
 					}
-					
-					$div1.append($div3);
+					if(data[key].userId == userid) {
+						$div2.addClass('mytalk');
+						$label.addClass('mytalkLabel');
+						$divImg.addClass('mytalk-image');
+					} else {
+						$div2.addClass('otherstalk');
+						$label.addClass('otherLabel');
+						$divImg.addClass('otherstalk-image');
+					}
 				}
-				$('#talks').append($div1);
 				tmheight = tmheight - $div1.height();
 			}
-			$('#talkMargin').css('height', tmheight); 
+			$div.css('height', tmheight); 
 			$('#talks').scrollTop($('#talks')[0].scrollHeight); // 스크롤이 가장 아래에서 로드됨
 		}
 	});
@@ -311,7 +284,7 @@ function enterkey(){
 					}
 				});
 			} else if(sinTalkYN == 'N'){ // 만들어진 채팅이면 톡추가만 해줌
-				$('#transBt').text('파파고 번역(한->영, 영->한)');
+				$('#transBt').text('파파고 번역(한->영, 영->한)'); // 번역 중에 대화를 칠 경우 원래 값을 초기화
 				$.ajax({
 					url: 'insertTalk',
 					data: {
@@ -375,8 +348,10 @@ function userInfo2(userArr){
 			$('#invitelineDiv').html('');
 			for(var key in data){
 				var $div = $('<div class="inviteline">');
+				
 				var $div2 = $('<div>');
 				$div2.text(data[key].userId);
+				
 				var $div3 = $('<div>');
 				// 접속 정보
 				if(data[key].connect == 't'){ // 회원접속 중 일시
@@ -386,6 +361,7 @@ function userInfo2(userArr){
 					// 로그아웃한 기준으로 경과시간
 					$div3.text(data[key].userConnect);
 				}
+				
 				var $button = $('<button>');
 				$button.text('+');
 				// 클릭 시 초대

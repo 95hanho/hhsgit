@@ -117,7 +117,6 @@ public class TalkController {
 	@GetMapping("talkView")
 	public String talkView(Model m, @RequestParam("tsnum") int tsnum, HttpSession session) {
 		logger.info("old Talk ENTER");
-		String webmessage = null;
 
 		User user = (User) session.getAttribute("loginUser");
 		String userId = user.getUserId();

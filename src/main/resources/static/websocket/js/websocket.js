@@ -1,6 +1,16 @@
 /**
  * 웹소켓 실행
  */
+ 
+$(document).ready(function(){
+	// 서버로부터 웹소켓메시지가 왔으면 서버에 웹메시지보냄, 아니면 그냥 실행
+	if(webmessage == ''){
+		send_message();
+	} else{
+		send_message(webmessage);
+	}
+});
+
 var wsUri = "ws://202.30.249.27:9438/websocket";
 var websocket = null;
 
@@ -53,13 +63,3 @@ function onMessage(evt) {
 function onError(evt) {
 
 }
-
-
-$(document).ready(function(){
-	// 서버로부터 웹소켓메시지가 왔으면 서버에 웹메시지보냄, 아니면 그냥 실행
-	if(webmessage == ''){
-		send_message();
-	} else{
-		send_message(webmessage);
-	}
-});

@@ -33,7 +33,7 @@
 						<div><img alt="하하" src="talk/images/꽃2.png"></div>
 					</div>
 				</div>
-			 -->
+			 
 			 
 			 	<div id="talkMargin"></div>
 			 	<div class="talkline">
@@ -52,7 +52,7 @@
 			 	<div class="talkline">
 			 		<div class="mytalk">hanho : ㅁㄴㅇㄹㅁㄴㅇ<div class="langs">한국어</div></div>
 			 	</div>
-			 
+			 -->
 			</div>
 		</div>
 		<div id="backDiv" > <!-- 채팅방목록으로 돌아가기 -->
