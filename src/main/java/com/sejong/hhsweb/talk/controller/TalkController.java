@@ -138,6 +138,7 @@ public class TalkController {
 	public void deletets(Model m, @RequestParam("tsnum") int tsnum, @RequestParam("ifone") String ifone,
 			HttpSession session) {
 		String userId = ((User) session.getAttribute("loginUser")).getUserId();
+		logger.info(userId + " ChatList EXIT");
 		
 		talkService.deleteTalkRead(tsnum, userId);
 
@@ -154,6 +155,8 @@ public class TalkController {
 		String userId = ((User) session.getAttribute("loginUser")).getUserId();
 		String ifone = null;
 		String tmd = null;
+		
+		logger.info(userId + " ChatRoom EXIT");
 		
 		talkService.deleteTalkRead(tsnum, userId);
 
@@ -293,6 +296,7 @@ public class TalkController {
 		TalkSpace resultTS = new TalkSpace();
 
 		String userId = ((User) session.getAttribute("loginUser")).getUserId();
+		logger.info(userId + " bring chatList");
 		ArrayList<TalkSpace> talkList = talkService.selectTalkList(userId);
 		for (TalkSpace talkSpace : talkList) {
 			if (talkSpace.getTsnum() == tsnum) {
@@ -307,6 +311,7 @@ public class TalkController {
 	@ResponseBody
 	public void inviteUser(@RequestParam("tsnum") int tsnum, @RequestParam("userId") String inviteId,
 			@RequestParam("tmd") String tmd) {
+		logger.info("invitation");
 
 		// 채팅방 인원 추가
 		tmd = tmd + "," + inviteId;
@@ -396,6 +401,7 @@ public class TalkController {
 	@GetMapping("selectImage")
 	@ResponseBody
 	private UploadFile selectImage(@RequestParam("tnum") int tnum) {
+		logger.info("image call");
 		UploadFile file = talkService.insertSelectImage(tnum);
 		return file;
 	}
@@ -420,6 +426,7 @@ public class TalkController {
 	@GetMapping("langsCheck")
 	@ResponseBody
 	public String langsCheck(@RequestParam("text") String text) {
+		logger.info("langsCheck");
 		ApiExamDetectLangs adl = new ApiExamDetectLangs();
 		String result = adl.detectLangs(text);
 
@@ -430,6 +437,7 @@ public class TalkController {
 	@GetMapping("papagotrans")
 	@ResponseBody
 	public String papagotrans(@RequestParam("content") String content, @RequestParam("langs") String langs) {
+		logger.info("translation");
 		ApiExamTranslateNmt atn = new ApiExamTranslateNmt();
 		String result = atn.transLangs(content, langs);
 		return result;
@@ -439,6 +447,7 @@ public class TalkController {
 	@GetMapping("connectUser")
 	@ResponseBody
 	public ArrayList<User> connectUser(@RequestParam("userArr") String userArr, HttpSession session) {
+		logger.info("connectUser");
 		String userId = ((User) session.getAttribute("loginUser")).getUserId();
 		ArrayList<User> allUserList = userService.AllSelectUser(userId);
 		String[] userInfo = userArr.split(", ");
@@ -465,6 +474,7 @@ public class TalkController {
 	@ResponseBody
 	public ArrayList<User> selectIUlist(@RequestParam("userArr") String userArr, HttpSession session,
 			@RequestParam("tmd") String tmd) {
+		logger.info("call invitation List");
 		String userId = ((User) session.getAttribute("loginUser")).getUserId();
 		ArrayList<User> allUserList = userService.AllSelectUser(userId);
 		String[] inUserList = tmd.split(",");

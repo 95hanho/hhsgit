@@ -11,7 +11,9 @@ $(document).ready(function(){
 	}
 });
 
+//var wsUri = "ws://172.21.208.1:9438/websocket";
 var wsUri = "ws://202.30.249.27:9438/websocket";
+
 var websocket = null;
 
 function send_message(data) {
